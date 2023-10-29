@@ -1,0 +1,3 @@
+run with make: make run
+compile with make: make 
+clean with make: make clean 
