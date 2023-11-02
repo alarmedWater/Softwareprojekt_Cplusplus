@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "player.h"
+#include "level.h"
 
 int main() {
     // Create a window
@@ -10,6 +11,9 @@ int main() {
     
     // Create a player object
     Player player;
+
+    // Create a level object
+    Level level;
 
     // Main loop
     while (window.isOpen()) {
@@ -29,6 +33,9 @@ int main() {
 
         // Clear the window
         window.clear();
+
+        // Draw the level
+        level.draw(window);
 
         // Draw the player
         player.draw(window);

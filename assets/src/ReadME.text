@@ -1,6 +1,7 @@
 run with make: make run
 compile with make: make 
 clean with make: make clean 
+Makefile packt .o in obj file
 
 
 to do: 
@@ -8,14 +9,22 @@ Import SFML in eigenem Ordnern in assets/lib/SFML
 
 Arbeitsteilung: 
 Cenk: 
-    Level grundlagen 
-    Collactable items, wie coins oder sowas
+    Collactable items wie coins oder sowas
+        to do: Anlegen, Textur wie Interaktion mit Spieler? -> Über level Klasse
+
 
 Julian 
+    Level grundlagen:
+        update:
+            Spiel ist in grid aufgeteilt. 20/20 Grid 2D Vector in jedem feld kann feind block oder Speiler sin
+            Erste Textur Angelegt
+        to do: Größe der objekte an bildschirm anpassen 
     Player
-        update: Player ist Klotz, kann springen und laufen, geschwindigkeiten und gravtiy feinustieren 
+        update: Player hat textur, kann springen und laufen, 
+        to do : geschwindigkeiten und gravtiy feinjustieren 
     Enemy 
         update: nicht angefangen 
+        to do: anfangen
 
 Alle: 
     Wie Steuerung mit sensoren. zb Plattform bewegen mit ultraschall sensor usw...

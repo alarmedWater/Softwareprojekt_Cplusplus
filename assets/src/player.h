@@ -1,21 +1,18 @@
-#ifndef PLAYER_H
-#define PLAYER_H
-
+// Player.h
 #include <SFML/Graphics.hpp>
 
 class Player {
+    sf::Sprite sprite;
+    sf::Texture texture;
+    sf::Vector2f velocity;
+    float gravity;
+    float jumpVelocity;
+    bool isJumping;
+    const int cellSize = 50; // You will need to set this to your actual cell size
+
 public:
     Player();
-    void update(float deltaTime); // Add deltaTime parameter
+    void update(float deltaTime);
     void draw(sf::RenderWindow &window);
-    sf::RectangleShape getShape();
-
-private:
-    sf::RectangleShape shape;
-    sf::Vector2f velocity; // Change type to sf::Vector2f
-    float gravity;
-    float jumpVelocity; // Renamed from jumpHeight
-    bool isJumping;
+    void setTextureAndScale(const std::string& texturePath);
 };
-
-#endif
