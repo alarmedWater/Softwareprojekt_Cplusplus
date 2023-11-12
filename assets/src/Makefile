@@ -18,10 +18,10 @@ OBJECTS := $(addprefix $(OBJDIR)/,$(OBJECTS))
 CXXFLAGS := -std=c++11
 
 # Include directories
-INCLUDES := -I./ -I/usr/include/SFML/include
+INCLUDES := -I./ -Iexternals/SFML/include
 
 # Linker flags
-LDFLAGS := -L/usr/include/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS := -Lexternals/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system
 
 # Build target
 all: $(EXEC)
