@@ -5,7 +5,7 @@ Makefile packt .o in obj file
 
 
 to do: 
-Import SFML in eigenem Ordnern in assets/lib/SFML
+
 
 Arbeitsteilung: 
 Cenk: 
@@ -52,3 +52,10 @@ Explanation of the folders:
     CMakeLists.txt: If you're using CMake as your build system, this file will define how your project is built.
 
     README.md: A markdown file to explain your project, how to build and run it, dependencies, etc.
+
+
+
+
+
+    done
+    Import SFML in eigenem Ordnern in assets/lib/SFML
