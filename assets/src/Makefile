@@ -10,18 +10,19 @@ SOURCES := main.cpp player.cpp level.cpp
 # Object files directory
 OBJDIR := obj
 
-# Object files
+# Object filesf
 OBJECTS := $(SOURCES:.cpp=.o)
 OBJECTS := $(addprefix $(OBJDIR)/,$(OBJECTS))
 
 # Compiler flags
-CXXFLAGS := -std=c++11
+CXXFLAGS := -std=c++17
 
 # Include directories
-INCLUDES := -I./ -I../../../externals/SFML/include
+INCLUDES := -I./ -I/home/parallels/Documents/SW_Pro/Softwareprojekt_Cplusplus/externals/SFML/include
+
 
 # Linker flags
-LDFLAGS := -L../../../externals/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS := -L/home/parallels/Documents/SW_Pro/Softwareprojekt_Cplusplus/externals/externals/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system
 
 all: $(EXEC)
 
