@@ -2,10 +2,14 @@
 
 
 #include <SFML/Graphics.hpp>
-
+#include <stdexcept> // for std::runtime_error
 #include "player.h"
 
-Player::Player() {
+Player::Player()
+{
+ 
+    sf::Texture texture;
+     sprite = sf::Sprite(texture);
     // Load texture from a file
     if (!texture.loadFromFile("/home/parallels/Documents/SW_Pro/Softwareprojekt_Cplusplus/assets/texture/Charaters/Main/main_standing.png")) {
         // Handle error
@@ -14,7 +18,7 @@ Player::Player() {
     setTextureAndScale("/home/parallels/Documents/SW_Pro/Softwareprojekt_Cplusplus/assets/texture/Charaters/Main/main_standing.png");
 
     // Initialize player attributes
-    sprite.setPosition(100.0f, 550.0f);
+     sprite.setPosition(sf::Vector2f(100.0f, 550.0f));
     velocity = sf::Vector2f(0.0f, 0.0f);
     gravity = 150.0f; // Adjusted gravity
     jumpVelocity = -400.0f; // Adjusted jump velocity for a more natural feel
@@ -31,7 +35,7 @@ void Player::setTextureAndScale(const std::string& texturePath) {
     // Calculate scale factors to size the player as two grid cells
     float scaleFactorX = (2.0f * cellSize) / texture.getSize().x;
     float scaleFactorY = (2.0f * cellSize) / texture.getSize().y;
-    sprite.setScale(scaleFactorX, scaleFactorY);
+    sprite.setScale(sf::Vector2f(scaleFactorX, scaleFactorY));
 
     // Adjust the position to account for the new size
     sprite.setPosition(sprite.getPosition().x, sprite.getPosition().y - cellSize); // Adjust Y if needed
@@ -50,7 +54,7 @@ void Player::update(float deltaTime) {
     }
 
     // Update the sprite's position
-    sprite.move(velocity.x * deltaTime, velocity.y * deltaTime);
+    sprite.move(sf::Vector2f(0.0f, velocity.y * deltaTime));
 
     // Jumping
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !isJumping) {

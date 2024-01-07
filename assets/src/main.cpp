@@ -6,7 +6,9 @@
 
 int main() {
     // Create a window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Hello World");
+    sf::Vector2u windowSize(800, 600);
+    sf::VideoMode mode(windowSize);
+    sf::RenderWindow window(mode, "SFML Hello World");
     sf::Clock clock;
     
     // Create a player object

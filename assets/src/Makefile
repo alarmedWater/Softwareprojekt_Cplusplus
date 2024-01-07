@@ -14,15 +14,19 @@ OBJDIR := obj
 OBJECTS := $(SOURCES:.cpp=.o)
 OBJECTS := $(addprefix $(OBJDIR)/,$(OBJECTS))
 
-# Compiler flags
-CXXFLAGS := -std=c++17
-
-# Include directories
-INCLUDES := -I./ -I/home/parallels/Documents/SW_Pro/Softwareprojekt_Cplusplus/externals/SFML/include
 
 
-# Linker flags
-LDFLAGS := -L/home/parallels/Documents/SW_Pro/Softwareprojekt_Cplusplus/externals/externals/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system
+# SFML include and library paths
+SFML_DIR = /home/parallels/Documents/SW_Pro/Softwareprojekt_Cplusplus/externals/SFML
+SFML_INCLUDE = -I$(SFML_DIR)/include
+SFML_LIBS = -L$(SFML_DIR)/lib -lsfml-graphics -lsfml-window -lsfml-system
+
+# Your compiler flags (add SFML_INCLUDE here)
+CXXFLAGS = -std=c++17 $(SFML_INCLUDE)
+
+# Your linker flags (add SFML_LIBS here)
+LDFLAGS = $(SFML_LIBS)
+
 
 all: $(EXEC)
 
