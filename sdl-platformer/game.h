@@ -1,13 +1,9 @@
-/******************************************************************************
- * Copyright (c) Artur Eganyan
- *
- * This software is provided "AS IS", WITHOUT ANY WARRANTY, express or implied.
- ******************************************************************************/
+
 
 #ifndef GAME_H
 #define GAME_H
 
-#include "types.h"
+#include <SDL2/SDL_types.h>
 
 extern Level* level;
 extern Player player;
