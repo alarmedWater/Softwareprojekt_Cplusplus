@@ -1,11 +1,22 @@
 /**
- * @file game.h
- * @brief Game state definitions and main game structure for the SDL Platformer.
- * @brief Gameplay mechanics for the SDL Platformer, including player actions and properties.
+ * @file game.c
+ * @brief Hauptdefinitions- und Strukturdatei für das SDL Plattformspiel.
+ *
+ * Enthält die Definitionen der Spielzustände, die Hauptspielstruktur, 
+ * Spielerattribute und Funktionen zur Verwaltung von Spieleraktionen, 
+ * Spiellogik und Level-Interaktionen. Diese Datei bildet das Rückgrat 
+ * der Spielmechanik und des Zustandsmanagements.
  */
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <math.h>
+#include "game.h"
+#include "framecontrol.h"
+#include "helpers.h"
+#include "render.h"
+#include "levels.h"
+
 /**
  * @enum GAME_STATE
  * @brief Enumeration of the possible states in the game.
@@ -154,7 +165,7 @@ void respawnPlayer()
     player.y = game.respawnPos.y;
 }
 
-**
+/**
  * @brief Setzt das aktuelle Level anhand von Zeilen- und Spaltenindizes.
  * 
  * Diese Funktion weist die Variable 'level' auf ein Level-Objekt im Level-Array zu,
@@ -171,12 +182,23 @@ void setLevel( int r, int c )
         level->init();
     }
 }
-
+/**
+ * @brief Markiert das aktuelle Level als abgeschlossen.
+ * 
+ * Diese Funktion setzt den Spielstatus auf STATE_LEVELCOMPLETE, 
+ * was bedeutet, dass das aktuelle Level abgeschlossen ist.
+ */
 void completeLevel()
 {
     game.state = STATE_LEVELCOMPLETE;
 }
-
+/**
+ * @brief Verarbeitet Benutzereingaben und aktualisiert den Spielzustand entsprechend.
+ * 
+ * Diese Funktion verarbeitet Benutzereingaben (wie Tastaturbefehle) und aktualisiert
+ * die Bewegung und Aktionen des Spielers entsprechend. Dazu gehören Bewegungen nach
+ * links und rechts, Klettern, Springen und Interaktionen wie das Öffnen von Türen.
+ */
 static void processInput()
 {
     // ... Left
@@ -273,7 +295,13 @@ static void processInput()
     }
 #endif
 }
-
+/**
+ * @brief Verarbeitet die Spielerlogik in jedem Frame.
+ *
+ * Diese Funktion aktualisiert den Zustand und die Position des Spielers basierend auf der Bewegung,
+ * den Aktionen und den Umgebungsinteraktionen. Sie behandelt auch Bildschirmgrenzen und
+ * wechselt Level, wenn nötig.
+ */
 static void processPlayer()
 {
     // Movement
@@ -437,7 +465,13 @@ static void processPlayer()
         game.respawnPos.y = player.y;
     }
 }
-
+/**
+ * @brief Verarbeitet alle Objekte im aktuellen Level.
+ *
+ * Diese Funktion iteriert durch alle Objekte im Level und führt für jedes Objekt
+ * spezifische Aktionen aus. Dies schließt die Kollisionserkennung mit dem Spieler
+ * und die Aktualisierung des Zustands jedes Objekts ein.
+ */
 static void processObjects()
 {
     for (int i = 0; i < level->objects.count; ++ i) {
@@ -452,6 +486,13 @@ static void processObjects()
     }
 }
 
+/**
+ * @brief Verarbeitet einen einzelnen Frame des Spiels.
+ *
+ * Diese Funktion ist für das Zeichnen des Bildschirms, das Verarbeiten von Benutzereingaben,
+ * das Aktualisieren des Spielzustands und das Verwalten der Spiellogik verantwortlich.
+ * Sie kontrolliert auch die Spielzustände wie STATE_KILLED, STATE_LEVELCOMPLETE und STATE_GAMEOVER.
+ */
 static void processFrame()
 {
     // Draw screen
@@ -519,6 +560,13 @@ static void processFrame()
 #endif
 }
 
+
+/**
+ * @brief Wird aufgerufen, wenn das Spiel beendet wird.
+ *
+ * Diese Funktion wird aufgerufen, wenn das Spiel beendet wird, um verschiedene
+ * Ressourcen freizugeben und das Spiel sauber zu beenden.
+ */
 static void onExit()
 {
     stopFrameControl();
@@ -527,6 +575,13 @@ static void onExit()
     SDL_Quit();
 }
 
+
+/**
+ * @brief Initialisiert das Spiel.
+ *
+ * Diese Funktion initialisiert das Spiel, indem sie verschiedene Komponenten wie
+ * Rendering, Spielertypen und Level initialisiert. Sie setzt auch den Spielzustand auf STATE_PLAYING.
+ */
 void initGame()
 {
     atexit(onExit);
@@ -540,6 +595,12 @@ void initGame()
     game.state = STATE_PLAYING;
 }
 
+/**
+ * @brief Startet und führt das Spiel aus.
+ *
+ * Diese Funktion startet das Spiel und führt die Spielschleife aus. Die Spielschleife läuft,
+ * bis der Spielzustand STATE_QUIT erreicht wird.
+ */
 void runGame()
 {
     startFrameControl(FRAME_RATE, MAX_DELTA_TIME);
