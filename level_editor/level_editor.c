@@ -38,10 +38,55 @@ int main() {
     return 0;
 }
 
-void handleMouseClick(SDL_MouseButtonEvent button, char grid[][]) {
-    // Bestimmen Sie die Zelle, auf die geklickt wurde, und ändern Sie ihren Typ
+
+void initLevelGrid(char grid[LEVEL_HEIGHT][LEVEL_WIDTH]) {
+    for (int i = 0; i < LEVEL_HEIGHT; i++) {
+        for (int j = 0; j < LEVEL_WIDTH; j++) {
+            grid[i][j] = ' '; // Leere Zelle
+        }
+    }
 }
 
-void saveLevel(char grid[][]) {
-    // Speichern Sie das Grid in einer Datei
+
+void handleMouseClick(SDL_MouseButtonEvent button, char grid[LEVEL_HEIGHT][LEVEL_WIDTH]) {
+    int x = button.x / (800 / LEVEL_WIDTH);  // Annahme: Fensterbreite ist 800
+    int y = button.y / (600 / LEVEL_HEIGHT); // Annahme: Fensterhöhe ist 600
+
+    if (x < LEVEL_WIDTH && y < LEVEL_HEIGHT) {
+        // Hier Code zur Änderung des Zellentyps
+        // Beispiel: Zyklus durch einige Zeichen
+        if (grid[y][x] == ' ') grid[y][x] = '*';
+        else if (grid[y][x] == '*') grid[y][x] = 'x';
+        else grid[y][x] = ' ';
+    }
+}
+
+void renderGrid(SDL_Renderer *renderer, char grid[LEVEL_HEIGHT][LEVEL_WIDTH]) {
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE); // Weiß
+    SDL_RenderClear(renderer);
+
+    for (int i = 0; i < LEVEL_HEIGHT; i++) {
+        for (int j = 0; j < LEVEL_WIDTH; j++) {
+            // Zeichnen Sie hier jede Zelle basierend auf ihrem Typ
+            // Beispiel: Zeichnen eines Rechtecks für 'x' und eines Kreises für '*'
+        }
+    }
+}
+
+
+void saveLevel(char grid[LEVEL_HEIGHT][LEVEL_WIDTH]) {
+    FILE *file = fopen("level.txt", "w");
+    if (file == NULL) {
+        // Fehlerbehandlung
+        return;
+    }
+
+    for (int i = 0; i < LEVEL_HEIGHT; i++) {
+        for (int j = 0; j < LEVEL_WIDTH; j++) {
+            fputc(grid[i][j], file);
+        }
+        fputc('\n', file);
+    }
+
+    fclose(file);
 }
