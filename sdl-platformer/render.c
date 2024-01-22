@@ -4,11 +4,12 @@
  * This software is provided "AS IS", WITHOUT ANY WARRANTY, express or implied.
  ******************************************************************************/
 
-#include "render.h"
+#include <SDL2/SDL_render.h> 
 #include "game.h"
 #include "framecontrol.h"
-#include "helpers.h"
-#include "SDL_ttf.h"
+
+#include "helpers.h>
+#include <SDL2/SDL_ttf.h>
 #include <string.h>
 #include <stdio.h>
 
