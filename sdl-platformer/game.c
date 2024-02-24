@@ -9,7 +9,7 @@
 #include "helpers.h"
 #include "render.h"
 #include "levels.h"
-#include "SDL_ttf.h"
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <math.h>
 

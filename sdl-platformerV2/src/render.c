@@ -1,9 +1,8 @@
-#include <SDL2/SDL_render.h> 
+#include "render.h"
 #include "game.h"
 #include "framecontrol.h"
-
-#include "helpers.h>
-#include <SDL2/SDL_ttf.h>
+#include "helpers.h"
+#include "SDL2/SDL_ttf.h"
 #include <string.h>
 #include <stdio.h>
 

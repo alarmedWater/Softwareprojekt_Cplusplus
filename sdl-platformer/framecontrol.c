@@ -6,10 +6,8 @@
 
 #include "framecontrol.h"
 #include "helpers.h"
-#include "SDL.h"#ifndef LEVEL_EDITOR_H
-#define LEVEL_EDITOR_H
+#include <SDL2/SDL.h>
 
-#include <SDL.h>
 
 #define LEVEL_WIDTH  10  // Die Breite des Levels, ändern Sie dies entsprechend
 #define LEVEL_HEIGHT 10  // Die Höhe des Levels, ändern Sie dies entsprechend

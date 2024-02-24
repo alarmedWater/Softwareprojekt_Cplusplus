@@ -1,7 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
+
 
 //#define DEBUG_MODE
 

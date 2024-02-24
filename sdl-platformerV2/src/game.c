@@ -9,114 +9,48 @@
  */
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <stdio.h>
-#include <math.h>
 #include "game.h"
 #include "framecontrol.h"
 #include "helpers.h"
 #include "render.h"
 #include "levels.h"
 
-/**
- * @enum GAME_STATE
- * @brief Enumeration of the possible states in the game.
- *
- * This enumeration defines various states that the game can be in at any given moment,
- * such as playing, game over, level complete, etc.
- */
+#include <stdio.h>
+#include <math.h>
+
 typedef enum
 {
-    STATE_QUIT = 0,         /**< State when the game is set to quit. */
-    STATE_PLAYING,          /**< State when the game is currently being played. */
-    STATE_KILLED,           /**< State when the player has been killed. */
-    STATE_GAMEOVER,         /**< State indicating game over. */
-    STATE_LEVELCOMPLETE     /**< State when a level is completed. */
+    STATE_QUIT = 0,
+    STATE_PLAYING,
+    STATE_KILLED,
+    STATE_GAMEOVER,
+    STATE_LEVELCOMPLETE
 } GAME_STATE;
 
-/**
- * @struct
- * @brief Represents the main game state and properties.
- *
- * This structure holds the current state of the game, including the current game state,
- * keyboard state, respawn position, time until the level is cleaned, and jump status.
- */
 static struct {
-    GAME_STATE state;            /**< Current state of the game. */
-    const Uint8* keystate;       /**< Current state of the keyboard. */
-    struct { double x, y; } respawnPos; /**< Position where the player respawns. */
-    double cleanTime;            /**< Time remaining until the level is cleaned. */
-    int jumpDenied;              /**< Flag indicating if jumping is denied. */
+    GAME_STATE state;
+    const Uint8* keystate;
+    struct { double x, y; } respawnPos;
+    double cleanTime;
+    int jumpDenied;
 } game;
 
-
-/** 
- * @var Level* level
- * @brief Pointer to the current level in the game.
- */
 Level* level = 0;
-
-/** 
- * @var Player player
- * @brief The player character in the game.
- */
 Player player;
 
-/** 
- * @var static const double PLAYER_SPEED_RUN
- * @brief Running speed of the player in pixels per second.
- */
-static const double PLAYER_SPEED_RUN = 72;
+static const double PLAYER_SPEED_RUN = 72;          // Pixels per second 
+static const double PLAYER_SPEED_LADDER = 48;       //
+static const double PLAYER_SPEED_JUMP = 216;        //
+static const double PLAYER_SPEED_FALL_MAX = 120;    //
 
-/** 
- * @var static const double PLAYER_SPEED_LADDER
- * @brief Climbing speed of the player on ladders in pixels per second.
- */
-static const double PLAYER_SPEED_LADDER = 48;
+static const double PLAYER_GRAVITY = 24 * 48;       // Pixels per second per second
 
-/** 
- * @var static const double PLAYER_SPEED_JUMP
- * @brief Jumping speed of the player in pixels per second.
- */
-static const double PLAYER_SPEED_JUMP = 216;
+static const double PLAYER_ANIM_SPEED_RUN = 8;      // Frames per second
+static const double PLAYER_ANIM_SPEED_LADDER = 6;   //
 
-/** 
- * @var static const double PLAYER_SPEED_FALL_MAX
- * @brief Maximum falling speed of the player in pixels per second.
- */
-static const double PLAYER_SPEED_FALL_MAX = 120;
+static const double CLEAN_PERIOD = 10000;           // Milliseconds
 
-/** 
- * @var static const double PLAYER_GRAVITY
- * @brief Gravity affecting the player, in pixels per second squared.
- */
-static const double PLAYER_GRAVITY = 24 * 48;
 
-/** 
- * @var static const double PLAYER_ANIM_SPEED_RUN
- * @brief Running animation speed of the player in frames per second.
- */
-static const double PLAYER_ANIM_SPEED_RUN = 8;
-
-/** 
- * @var static const double PLAYER_ANIM_SPEED_LADDER
- * @brief Ladder climbing animation speed of the player in frames per second.
- */
-static const double PLAYER_ANIM_SPEED_LADDER = 6;
-
-/** 
- * @var static const double CLEAN_PERIOD
- * @brief Period for cleaning up or resetting the level, in milliseconds.
- */
-static const double CLEAN_PERIOD = 10000;
-
-/**
- * @brief Damages the player by a given amount.
- * 
- * Reduces the player's health by the specified amount of damage. If the player's health
- * reaches zero, the player is killed.
- *
- * @param damage The amount of damage to inflict on the player.
- */
 void damagePlayer( int damage )
 {
     if (player.invincibility > 0) {
@@ -129,13 +63,6 @@ void damagePlayer( int damage )
     }
 }
 
-
-/**
- * @brief Kills the player.
- * 
- * Triggers the player's death sequence. If the player has remaining lives, the game state
- * is set to STATE_KILLED, otherwise to STATE_GAMEOVER.
- */
 void killPlayer()
 {
     if (player.invincibility > 0) {
@@ -149,12 +76,6 @@ void killPlayer()
     }
 }
 
-/**
- * @brief Respawns the player at a predefined position.
- * 
- * Resets the player's state and position to the last respawn point. The player is granted
- * a brief period of invincibility after respawning.
- */
 void respawnPlayer()
 {
     setAnimation((Object*)&player, 0, 0, 0);
@@ -165,16 +86,6 @@ void respawnPlayer()
     player.y = game.respawnPos.y;
 }
 
-/**
- * @brief Setzt das aktuelle Level anhand von Zeilen- und Spaltenindizes.
- * 
- * Diese Funktion weist die Variable 'level' auf ein Level-Objekt im Level-Array zu,
- * basierend auf den gegebenen Indizes. Wenn das Level eine Initialisierungsroutine hat,
- * wird diese aufgerufen.
- *
- * @param r Zeilenindex im Level-Array.
- * @param c Spaltenindex im Level-Array.
- */
 void setLevel( int r, int c )
 {
     level = &levels[r][c];
@@ -182,23 +93,12 @@ void setLevel( int r, int c )
         level->init();
     }
 }
-/**
- * @brief Markiert das aktuelle Level als abgeschlossen.
- * 
- * Diese Funktion setzt den Spielstatus auf STATE_LEVELCOMPLETE, 
- * was bedeutet, dass das aktuelle Level abgeschlossen ist.
- */
+
 void completeLevel()
 {
     game.state = STATE_LEVELCOMPLETE;
 }
-/**
- * @brief Verarbeitet Benutzereingaben und aktualisiert den Spielzustand entsprechend.
- * 
- * Diese Funktion verarbeitet Benutzereingaben (wie Tastaturbefehle) und aktualisiert
- * die Bewegung und Aktionen des Spielers entsprechend. Dazu gehören Bewegungen nach
- * links und rechts, Klettern, Springen und Interaktionen wie das Öffnen von Türen.
- */
+
 static void processInput()
 {
     // ... Left
@@ -295,13 +195,7 @@ static void processInput()
     }
 #endif
 }
-/**
- * @brief Verarbeitet die Spielerlogik in jedem Frame.
- *
- * Diese Funktion aktualisiert den Zustand und die Position des Spielers basierend auf der Bewegung,
- * den Aktionen und den Umgebungsinteraktionen. Sie behandelt auch Bildschirmgrenzen und
- * wechselt Level, wenn nötig.
- */
+
 static void processPlayer()
 {
     // Movement
@@ -465,13 +359,7 @@ static void processPlayer()
         game.respawnPos.y = player.y;
     }
 }
-/**
- * @brief Verarbeitet alle Objekte im aktuellen Level.
- *
- * Diese Funktion iteriert durch alle Objekte im Level und führt für jedes Objekt
- * spezifische Aktionen aus. Dies schließt die Kollisionserkennung mit dem Spieler
- * und die Aktualisierung des Zustands jedes Objekts ein.
- */
+
 static void processObjects()
 {
     for (int i = 0; i < level->objects.count; ++ i) {
@@ -486,13 +374,6 @@ static void processObjects()
     }
 }
 
-/**
- * @brief Verarbeitet einen einzelnen Frame des Spiels.
- *
- * Diese Funktion ist für das Zeichnen des Bildschirms, das Verarbeiten von Benutzereingaben,
- * das Aktualisieren des Spielzustands und das Verwalten der Spiellogik verantwortlich.
- * Sie kontrolliert auch die Spielzustände wie STATE_KILLED, STATE_LEVELCOMPLETE und STATE_GAMEOVER.
- */
 static void processFrame()
 {
     // Draw screen
@@ -560,13 +441,6 @@ static void processFrame()
 #endif
 }
 
-
-/**
- * @brief Wird aufgerufen, wenn das Spiel beendet wird.
- *
- * Diese Funktion wird aufgerufen, wenn das Spiel beendet wird, um verschiedene
- * Ressourcen freizugeben und das Spiel sauber zu beenden.
- */
 static void onExit()
 {
     stopFrameControl();
@@ -575,13 +449,6 @@ static void onExit()
     SDL_Quit();
 }
 
-
-/**
- * @brief Initialisiert das Spiel.
- *
- * Diese Funktion initialisiert das Spiel, indem sie verschiedene Komponenten wie
- * Rendering, Spielertypen und Level initialisiert. Sie setzt auch den Spielzustand auf STATE_PLAYING.
- */
 void initGame()
 {
     atexit(onExit);
@@ -595,12 +462,6 @@ void initGame()
     game.state = STATE_PLAYING;
 }
 
-/**
- * @brief Startet und führt das Spiel aus.
- *
- * Diese Funktion startet das Spiel und führt die Spielschleife aus. Die Spielschleife läuft,
- * bis der Spielzustand STATE_QUIT erreicht wird.
- */
 void runGame()
 {
     startFrameControl(FRAME_RATE, MAX_DELTA_TIME);
