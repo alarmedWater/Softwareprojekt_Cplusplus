@@ -452,7 +452,6 @@ static void onExit()
 void initGame()
 {
     atexit(onExit);
-
     initRender("image/sprites.bmp", "font/PressStart2P.ttf");
     initTypes();
     initPlayer(&player);
