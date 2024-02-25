@@ -2,44 +2,34 @@
 #include "render.h"
 #include "game.h"
 #include "helpers.h"
+#include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <time.h>
+#endif
+
+
 
 Level levels[LEVEL_COUNTY][LEVEL_COUNTX];
 const char *levelPath = "level/level1.txt";
-char *levelsString;
+char *levelsString = NULL; // Initialize global pointers to NULL
 
-static const char* Teststring =
 
-"                    "  " *     b       b    "
-"  ooooooo S ooooooo "  " d                  "
-"=*******************"  "**** _       ****=**"
-"=                   "  "*                =  "
-"=    o    o    o    "  "*                =  "
-"=                   "  "*    ooo    p    =  "
-"***     _        **="  "*oo ----  **********"
-"                   ="  "*-- -               "
-"    f  o     o     ="  "*   -  p  ooo       "
-"              f    ="  "*     --=-----  o  O"
-"=**       _      ***"  "*       =       -  -"
-"=                   "  "*   b   =           "
-"=    o    o    o    "  "*       =           "
-"=      s            "  "*       =   g       "
-"****************  -*"  "*=***************   "
 
-"*           *   o -*"  " =                O "
-"*           *   - o*"  " =               ---"
-"*    o o o  *   o -*"  " =          oo      "
-"*  k    e   >   - o*"  " =  g oooo       goo"
-"*******=*****     -*"  " **********    *****"
-"*      =    *-  -  *"  "                    "
-"* h    =    *      *"  "   o o o    /       "
-"*    -----  *      *"  "          ------    "
-"*         - * o e o*"  "               -  ks"
-"*          **=******"  " oo  o / o     -----"
-"*-          *=      "  " ***=*****          "
-"*-  o o/ og *=      "  "    =               "
-"*- **********=      "  "    =           o   "
-"*-   ooo    <=      "  " P  = ooooo  s **~~~"
-"********************"  "*****************~~~";
+
+// Sprite Manipulation Functions
+static void changeSprite(ObjectTypeId typeId, int spriteRow, int spriteColumn);
+static void changeSprites_Castle(void);
+static void changeSprites_Forest(void);
+static void changeSprites_Underground(void);
+
+// Level Initialization and Management
+static void initLevelsFromString(const char *string);
+
 
 static void changeSprite(ObjectTypeId typeId, int spriteRow, int spriteColumn)
 {
@@ -163,7 +153,7 @@ static void initLevelsFromString(const char *string)
                         }
                         else
                         {
-                            createObject(level, TYPE_WATER_TOP, r, c);
+                            createDynamicObject(level, TYPE_WATER_TOP, r, c);
                         }
                         // Pillar
                     }
@@ -228,76 +218,76 @@ static void initLevelsFromString(const char *string)
                     }
                     else if (s == 'o')
                     {
-                        createObject(level, TYPE_COIN, r, c);
+                        createDynamicObject(level, TYPE_COIN, r, c);
                     }
                     else if (s == 'O')
                     {
-                        createObject(level, TYPE_GEM, r, c);
+                        createDynamicObject(level, TYPE_GEM, r, c);
                     }
                     else if (s == 'k')
                     {
-                        createObject(level, TYPE_KEY, r, c);
+                        createDynamicObject(level, TYPE_KEY, r, c);
                     }
                     else if (s == 'h')
                     {
-                        createObject(level, TYPE_HEART, r, c);
+                        createDynamicObject(level, TYPE_HEART, r, c);
                     }
                     else if (s == 'a')
                     {
-                        createObject(level, TYPE_APPLE, r, c);
+                        createDynamicObject(level, TYPE_APPLE, r, c);
                     }
                     else if (s == 'i')
                     {
-                        createObject(level, TYPE_PEAR, r, c);
+                        createDynamicObject(level, TYPE_PEAR, r, c);
                     }
                     else if (s == 'S')
                     {
-                        createObject(level, TYPE_STATUARY, r, c);
+                        createDynamicObject(level, TYPE_STATUARY, r, c);
                     }
                     else if (s == 'g')
                     {
-                        createObject(level, TYPE_GHOST, r, c);
+                        createDynamicObject(level, TYPE_GHOST, r, c);
                     }
                     else if (s == 's')
                     {
-                        createObject(level, TYPE_SCORPION, r, c);
+                        createDynamicObject(level, TYPE_SCORPION, r, c);
                     }
                     else if (s == 'p')
                     {
-                        createObject(level, TYPE_SPIDER, r, c);
+                        createDynamicObject(level, TYPE_SPIDER, r, c);
                     }
                     else if (s == 'r')
                     {
-                        createObject(level, TYPE_RAT, r, c);
+                        createDynamicObject(level, TYPE_RAT, r, c);
                     }
                     else if (s == 'b')
                     {
-                        createObject(level, TYPE_BAT, r, c);
+                        createDynamicObject(level, TYPE_BAT, r, c);
                     }
                     else if (s == 'q')
                     {
-                        createObject(level, TYPE_BLOB, r, c);
+                        createDynamicObject(level, TYPE_BLOB, r, c);
                     }
                     else if (s == 'f')
                     {
-                        createObject(level, TYPE_FIREBALL, r, c);
+                        createDynamicObject(level, TYPE_FIREBALL, r, c);
                     }
                     else if (s == 'e')
                     {
-                        createObject(level, TYPE_SKELETON, r, c);
+                        createDynamicObject(level, TYPE_SKELETON, r, c);
                     }
                     else if (s == '`')
                     {
-                        Object *drop = createObject(level, TYPE_DROP, r, c);
+                        Object *drop = createDynamicObject(level, TYPE_DROP, r, c);
                         drop->y = (drop->y / CELL_SIZE) * CELL_SIZE - (CELL_SIZE - drop->type->body.h) / 2 - 1;
                     }
                     else if (s == '_')
                     {
-                        createObject(level, TYPE_PLATFORM, r, c);
+                        createDynamicObject(level, TYPE_PLATFORM, r, c);
                     }
                     else if (s == '/')
                     {
-                        createObject(level, TYPE_SPRING, r, c);
+                        createDynamicObject(level, TYPE_SPRING, r, c);
                     }
                     else if (s == '<')
                     {
@@ -309,15 +299,15 @@ static void initLevelsFromString(const char *string)
                     }
                     else if (s == '&')
                     {
-                        createObject(level, TYPE_CLOUD1, r, c);
+                        createDynamicObject(level, TYPE_CLOUD1, r, c);
                     }
                     else if (s == '!')
                     {
-                        createObject(level, TYPE_TORCH, r, c);
+                        createDynamicObject(level, TYPE_TORCH, r, c);
                     }
                     else if (s >= '1' && s <= '9')
                     {
-                        Object *action = createObject(level, TYPE_ACTION, r, c);
+                        Object *action = createDynamicObject(level, TYPE_ACTION, r, c);
                         action->data = s;
                         // Start position
                     }
@@ -339,20 +329,28 @@ static void initLevelsFromString(const char *string)
     setLevel(startLevel.r, startLevel.c);
 }
 
-//DEBUG FUNCGTIO
-
-void printStringDebug(const char* str) {
-    while (*str) {
-        unsigned char c = (unsigned char)*str; // Cast to unsigned to handle characters >127 correctly
-        // Print printable characters as is and non-printable ones in hex
-        if (c >= 32 && c <= 126) { // Printable ASCII range
-            printf("%c", c);
-        } else { // Non-printable characters
-            printf("\\x%02X", c); // Print the hex code for non-printable characters
-        }
-        ++str;
+// Allocates memory and copies characters except newlines
+static char* allocateAndCopyNonNewlineChars(const char* source, long length) {
+    char* processedString = malloc(length + 1);
+    if (!processedString) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return NULL;
     }
-    printf("\n"); // New line at the end of the string
+
+    int j = 0;
+    for (int i = 0; i < length; ++i) {
+        if (source[i] != '\n') {
+            processedString[j++] = source[i];
+        }
+    }
+    processedString[j] = '\0'; // Null-terminate the processed string
+    return processedString;
+}
+
+// Processes the temporary string to remove newlines
+static void processLevelData(char* tempString, long length) {
+    levelsString = allocateAndCopyNonNewlineChars(tempString, length);
+    free(tempString); // Free the temporary string
 }
 
 // Function to free the memory allocated for levelsString
@@ -363,8 +361,9 @@ void freeLevelsString()
 }
 
 // Function to load level data from a file
-char *loadLevelFromFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
+// Function to load level data from a file
+char* loadLevelFromFile(const char* filename) {
+    FILE* file = fopen(filename, "r");
     if (!file) {
         fprintf(stderr, "Unable to open file %s\n", filename);
         return NULL;
@@ -374,10 +373,9 @@ char *loadLevelFromFile(const char *filename) {
     long length = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char *tempString = malloc(length + 1); // Temporary string to hold the original content
+    char* tempString = malloc(length + 1);
     if (!tempString) {
-        fprintf(stderr, "Memory allocation failed\n");
-        fclose(file);
+        fclose(file); // Close the file immediately after error
         return NULL;
     }
 
@@ -387,40 +385,10 @@ char *loadLevelFromFile(const char *filename) {
         fclose(file);
         return NULL;
     }
-    tempString[length] = '\0'; // Null-terminate the temporary string
+    tempString[length] = '\0';
+
+    processLevelData(tempString, length);
     fclose(file);
-
-    // Preprocess the tempString to keep only the characters your function can handle
-    freeLevelsString(); // Ensure no memory leak occurs
-    levelsString = malloc(length + 1); // Allocate maximum necessary length for processed string
-    if (!levelsString) {
-        fprintf(stderr, "Memory allocation failed for levelsString\n");
-        free(tempString);
-        return NULL;
-    }
-
-    int j = 0; // Index for the processed string
-    for (int i = 0; i < length; ++i) {
-        char s = tempString[i];
-        // Check if the character is one of the allowed characters
-        if (s == '*' || s == 'x' || s == '~' || s == '|' || s == '^' || s == '-' ||
-            s == ',' || s == '.' || s == ';' || s == '@' || s == '=' || s == 'd' ||
-            s == 'o' || s == 'O' || s == 'k' || s == 'h' || s == 'a' || s == 'i' ||
-            s == 'S' || s == 'g' || s == 's' || s == 'p' || s == 'r' || s == 'b' ||
-            s == 'q' || s == 'f' || s == 'e' || s == '`' || s == '_' || s == '/' ||
-            s == ' ' ||
-            s == '<' || s == '>' || s == '&' || s == '!' || (s >= '1' && s <= '9') || s == 'P') {
-            levelsString[j++] = s;
-        }
-    }
-    levelsString[j] = '\0'; // Null-terminate the processed string
-
-    free(tempString); // Free the temporary string as it's no longer needed
-
-    printStringDebug(levelsString);
-    printf("/////////////////////////////////////////////// ");
-    printStringDebug(Teststring);
-    
     return levelsString;
 }
 
@@ -443,7 +411,6 @@ void initLevels()
 
     ensure(strlen(levelsString) == LEVEL_COUNTY * LEVEL_COUNTX * ROW_COUNT * COLUMN_COUNT,
            "The levels string does not match the levels count or size.");
-    
 
     initLevelsFromString(levelsString);
 
@@ -455,129 +422,3 @@ void initLevels()
         }
     }
 }
-
-// There must be exactly LEVEL_COUNTX * LEVEL_COUNTY levels here
-
-/*
-"                    "  " *     b       b    "
-"  ooooooo S ooooooo "  " d                  "
-"=*******************"  "**** _       ****=**"
-"=                   "  "*                =  "
-"=    o    o    o    "  "*                =  "
-"=                   "  "*    ooo    p    =  "
-"***     _        **="  "*oo ----  **********"
-"                   ="  "*-- -               "
-"    f  o     o     ="  "*   -  p  ooo       "
-"              f    ="  "*     --=-----  o  O"
-"=**       _      ***"  "*       =       -  -"
-"=                   "  "*   b   =           "
-"=    o    o    o    "  "*       =           "
-"=      s            "  "*       =   g       "
-"****************  -*"  "*=***************   "
-
-"*           *   o -*"  " =                O "
-"*           *   - o*"  " =               ---"
-"*    o o o  *   o -*"  " =          oo      "
-"*  k    e   >   - o*"  " =  g oooo       goo"
-"*******=*****     -*"  " **********    *****"
-"*      =    *-  -  *"  "                    "
-"* h    =    *      *"  "   o o o    /       "
-"*    -----  *      *"  "          ------    "
-"*         - * o e o*"  "               -  ks"
-"*          **=******"  " oo  o / o     -----"
-"*-          *=      "  " ***=*****          "
-"*-  o o/ og *=      "  "    =               "
-"*- **********=      "  "    =           o   "
-"*-   ooo    <=      "  " P  = ooooo  s **~~~"
-"********************"  "*****************~~~";
-*/
-// Experiments
-
-/*
-static const char* levelsString =
-
-"    &           &   "  "                    "  "                  * "  "  `                *"  "*                  *"
-" P        &         "  "                    "  " _              *   "  "        o s       o*"  "*          o       *"
-"xxxxx               "  "                    "  " k  k  _        ****"  "****  ********  =***"  "*         ***      *"
-"xxx                 "  "                    "  "kakiaik          ***"  "                =  *"  "*       ***     g  *"
-"xx                  "  "                    "  "*******  ******  ***"  "             =******"  "*os    *  *  =******"
-"x                   "  "                    "  "                 ***"  " g o         =     *"  "******    *  =      "
-"x                   "  "    b               "  "        &        ***"  "*****     *****=****"  "*     *  **  =      "
-"xxxxx  ,,;,, a ,;,, "  ",,,                 "  "                 ***"  "               =   *"  "* s     ***  =    o "
-"xxxxxxxxxxxxxxxxxxxx"  "xxxx                "  "   _          _  ***"  "   o  o      f =   *"  "******=********* ***"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxx   ,,;,      "  "                 ***"  "  **  ** ***********"  "*     =     *   o   "
-"  xxx ` x  ` x  ` xx"  "xxxxx    xxxxxx     "  "                 ***"  "*        |  ` |   `|"  "  go  =   g *  ***  "
-"   ^    ^    ^    ^ "  " |      xxxxxxxxx   "  "                 ***"  "**       |    |    |"  "****  =  ****       "
-"                    "  " |        |    xxx  "  "     b      b    ***"  " **      |    |    |"  "      =     *       "
-"  .    s  .         "  " |. ,,,,s | . xxxxxx"  "x ,,, d,;,k d,,,,d d"  "    *  s | o  |  s |"  "      = o   *     g "
-"xxxx~~xxxxxxxxxxxxxx"  "xxxxxxxxxxxxx=xxxxxx"  "xxxxxxxxxxxxxxxxx***"  "=*******************"  "***************=****"
-
-"xxxx  xxxxxxxxxxxxxx"  "xxxxxxxxxxxxx=xxxxxx"  "xxxxxxxxxxxxxxxxxx**"  "********************"  "               =    "
-"xxx   `xxxxxxxxxxxxx"  "xxxxxxxxxxxx = xxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "**         * ooooo *"  "   b           =    "
-"x ^      xxx `  xxxx"  "xxx  ^  xxxx =  xxxx"  "xx   ^   b    ^   xx"  "**         d ooooo *"  "               =    "
-"x               `  x"  "x        |   =  ^  x"  "x                 xx"  "**     =************"  "          b    =    "
-"x       xxxxxx      "  "         | p =     |"  "      xxxxxxx     xx"  "** o   =    g       "  "               =    "
-"x      xxxxxxxx   xx"  "xxxx  xxxxxxxxxxxxxx"  "xxxx   xxxxx      xx"  "*****  =   *****    "  "               =    "
-"x   xxxxxxxxxxx  xxx"  "x ^    xxxxxxxxxxxxx"  "xxx               x*"  "**     =            "  "               =    "
-"xx  `xxxxxxxxx      "  "   b    |     | xxxx"  "xx            r     "  "       =    s       "  "                    "
-"xxx   xxxxxxxxxxxxxx"  "x       |     |     "  " | q         xxxxx**"  "**************=*****"  "*******      *******"
-"xxxx  xxxxxxxxxxxxxx"  "x    xxxxxxxxxxxxxxx"  "xxxxxx  x      xxxx*"  "**   b        =   **"  "***         -    ***"
-"xxxx  xxxxxxxxxxxxxx"  "x @    xxxxxxxxxxxxx"  "xxxx             xxx"  "x*  o   o     =   **"  "**       x        **"
-"xxxx  xxxxxxxxxxxxxx"  "xxxxx     | b       "  " |                xx"  "x***********      xx"  "xx       |        xx"
-"xxx    xxxxxxxxxxxxx"  "x  xxx    |         "  "e|                xx"  "xx                xx"  "xxx      |      .xxx"
-"          .         "  "  k xxx~~xxx~~xx~~xx"  "xxx~~~~~~~~~~~~~~~xx"  "xx~~~~~~~~~~~~~~~~xx"  "xxxx~~~~~x~~~~~~xxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxx~~xxx~~xx~~xx"  "xxxx~~~~~~~~~~~~~~xx"  "xx~~~~~~~~~~~~~~~~xx"  "xxxx~~~~~x~~~~~~xxxx";
-//*/
-
-/*
-static const char* levelsString =
-
-//         0                       1                       2                       3                       4                      5
-"                    "  "         &          "  "                    "  "                    "  "                    " "                    "
-"                    "  "o  ooo            & "  "                    "  "                    "  "                    " "                    "
-"                    "  "------   oo  xxx    "  "                    "  "                    "  "                    " "                    "
-"                    "  " f  -  -xxxxx       "  "                    "  "                    "  "                    " "                    "
-"                    "  "    ---             "  "                    "  "                    "  "                    " "                    "
-"                    "  "   o-o     g   o    "  "                    "  "                    "  "                    " "                    "
-"                    "  "------    xxx xxx  -"  "                    "  "                    "  "                    " "                    " // 0
-"                    "  "    -  ---         -"  "                    "  "                    "  "                    " "                    "
-"                    "  "    ----       o   -"  "                    "  "                    "  "                    " "                    "
-"                    "  "  -----   --  xxxx -"  "   o  o  o          "  "                    "  "                    " "                    "
-"                    "  "x    g             -"  "   -  -  -   oo     "  "                    "  "                    " "                    "
-"                    "  " xxxxxxxxxx        -"  "      -     ---  oo "  "                    "  "                    " "                    "
-"                    "  " ,,   ,   ,,xx,;,P -"  "      -          -- "  "                    "  "                    " "                    "
-"                    "  "xxxxxxxxxxxxxxxxxxxx"  "   xxxxxxxxxxxxx    "  "                    "  "                    " "                    "
-"                    "  "xxxxxxxxxxxxxxxxxxxx"  "                    "  "                    "  "                    " "***********=********"
-
-"                    "  "                    "  "              ******"  "********************"  "********************" "***********=********"
-"     &      &       "  "     &              "  "   &          ******"  "**                **"  "**               ***" "***********=********"
-"                    "  "               &    "  "        &           "  "                    "  "                    " "           =        "
-"        &           "  "                    "  "              *     "  "                    "  "             g      " "           =        "
-"                    "  "                    "  "              ******"  "********************"  "**********=*********" "********************"
-"                    "  "                    "  "              ******"  "**               |  "  "          =         " "                    "
-"                    "  "                    "  "              ******"  "**               |  "  "    !     =    !    " "                    " // 1
-"                    "  " ,;                 "  "              ******"  "**               |  "  "    g     =         " "                    "
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxx           "  "              ******"  "**              ****"  "********************" "***********         "
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxx            "  "              ******"  "**             *****"  "********************" "************        "
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxx             "  "              ******"  "**            ******"  "***      **  `   `  " "          ***       "
-"xxxxxxxxxxxxxxxxxxxx"  "xxx  |              "  "              ***   "  "      !      *******"  "**       *          " "     !     ***      "
-"xxxxxxxxxxxxxxxxxxxx"  "x    |    @ ,,,     "  "     ,;,      d     "  "            ********"  "***1*   2d          " "                    "
-"xxxxxxxxxxxxxxxxxxxx"  "x    xxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxx******"  "********************"  "**** ***************" "********************"
-"xxxxxxxxxxxxxxxxxxxx"  "x  xxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxx******"  "********************"  "**** ***************" "********************"
-
-"xxxxxxxxxxxxxxxxxxxx"  "xx  xxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxx******"  "********************"  "**** ***************" "********************"
-"xxxxxxxxxxxxxxxxxxxx"  "xxx      xx  xx xxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxxx xxxxxxxxxxxxxxx" "xxxxxxxxxxxxxxxxxxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxx      |      "  "      |        |    "  "   x  x `  xxxxxxxxx"  "xx    xxxxxxxxxxxxxx" "xxxxxxxxxxxxxxxxxxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxx .  |    xx"  "x    xxx       |  xx"  "x  `      xxxxx` xxx"  "x       xxxx   x  xx" "xxxxxxxxxxxxxxxxxxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxx xxxxxx   xxxxxxx"  "xx   b       ^   xxx"  "xxx      ^  b  ^   x" "x    xxxxxxxxxxxxxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxx  xxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxxxxx xxxx     xxxx"  "xxxxxx           .  " "       xxxxxxx  xxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxx    xxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxx    xxx"  "xxxxxxxxxxxxx  xxxxx" "x    xxxxxxxx    xxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xx    xxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxx   xx"  "xxxxxxxxxxx     xxxx" "xxx xxxxxxxx        " // 2
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxx  |    xxxx"  "xxx   x  |   x    xx" "xxxxxxxxxxxxxx    xx"
-"xxxxxxxxxxxxxxx xxxx"  "xxxxxxxxxx  xxxxxxxx"  "xxx xxxxxxxxxxx  xxx"  "xxxxxxxx   |   xxxxx"  "xxxx     |  xxx   xx" "xxxxxxxxxxxxxxxx xxx"
-"xxxxxxxxxxx ^    xxx"  "xxx  xx      xx  xx "  "xx   xx   xx  ^   xx"  "xxx ^ x   xxxx  xxxx"  "x        xxxxxxxxxxx" "xxxxxxxxxxx` xxxxxxx"
-"xxxxxxxxxx          "  " ^    ^  xx         "  "     ^             x"  "x        xxxxxx     "  "   xxxxxxxxxxxxxxxxx" "xxxxxxxxx     xxxxxx"
-"xxxxxxxxxxxxxxxx    "  "   r    xxxx        "  "        xxxxx     xx"  "xx    . xxxxxxxx xxx"  "xx  xxxxxxxxxxxxxxx " " ^ xxxxx   xxxxxxxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxxx~~xx~~x"  "~~xx~~xxxxxxxx . xxx"  "xxx  xxxxxxxxxxxxxxx"  "xx~~xxxxxxxxxxxxxx  " "      .  xxxxxxxxxxx"
-"xxxxxxxxxxxxxxxxxxxx"  "xxxxxxxxxxxx~~~~~~~~"  "~~~~~~xxxxxxxxxxxxxx"  "xxxxxxxxxxxxxxxxxxxx"  "xx~~xxxxxxxxxxxxxxxx" "x xx xxxxxxxxxxxxxxx";
-//*/

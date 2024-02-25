@@ -205,7 +205,7 @@ void ShootingEnemy_onFrame( Object* e )
 {
     if (e->state <= SHOOTINGENEMY_MOVING) {
         if (isVisible(e, (Object*)&player)) {
-            Object* shot = createObject(level, TYPE_ICESHOT, 0, 0);
+            Object* shot = createDynamicObject(level, TYPE_ICESHOT, 0, 0);
             shot->x = e->anim.flip & SDL_FLIP_HORIZONTAL ? e->x - shot->type->sprite.w : e->x + e->type->sprite.w;
             shot->y = e->y;
             setSpeed(shot, shot->vx * (e->vx > 0 ? 1 : -1), shot->vy);
@@ -363,7 +363,7 @@ void Fireball_onFrame( Object* e )
 {
     if (e->state <= FIREBALL_MOVING) {
         if (isVisible(e, (Object*)&player)) {
-            Object* shot = createObject(level, TYPE_FIRESHOT, 0, 0);
+            Object* shot = createDynamicObject(level, TYPE_FIRESHOT, 0, 0);
             shot->x = e->anim.flip & SDL_FLIP_HORIZONTAL ? e->x - shot->type->sprite.w : e->x + e->type->sprite.w;
             shot->y = e->y + 2;
             setSpeed(shot, shot->vx * (e->vx > 0 ? 1 : -1), shot->vy);
@@ -422,7 +422,7 @@ void Drop_onFrame( Object* e )
         }
 
     } else if (e->state <= DROP_CREATE) {
-        Object* drop = createObject(level, TYPE_DROP, 0, 0);
+        Object* drop = createDynamicObject(level, TYPE_DROP, 0, 0);
         drop->x = e->x;
         drop->y = e->y;
         drop->state = DROP_FALLING;

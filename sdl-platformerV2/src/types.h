@@ -216,7 +216,7 @@ void ObjectArray_clean( ObjectArray* objects );
 void ObjectArray_sortByDepth( ObjectArray* objects );
 
 void createStaticObject( Level* level, ObjectTypeId typeId, int r, int c );
-Object* createObject( Level* level, ObjectTypeId typeId, int r, int c );
+Object* createDynamicObject( Level* level, ObjectTypeId typeId, int r, int c );
 void initObject( Object* object, ObjectTypeId typeId );
 void initPlayer( Player* player );
 void initLevel( Level* level );

@@ -70,7 +70,7 @@ void createStaticObject( Level* level, ObjectTypeId typeId, int r, int c )
     level->cells[r][c] = &objectTypes[typeId];
 }
 
-Object* createObject( Level* level, ObjectTypeId typeId, int r, int c )
+Object* createDynamicObject( Level* level, ObjectTypeId typeId, int r, int c )
 {
     Object* object = (Object*)malloc(sizeof(Object));
     initObject(object, typeId);
