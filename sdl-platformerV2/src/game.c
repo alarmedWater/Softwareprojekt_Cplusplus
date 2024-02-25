@@ -18,6 +18,14 @@
 #include <stdio.h>
 #include <math.h>
 
+
+
+///{
+    // Example GPIO read function, you need to implement it
+    int leftPressed = readGPIOPin(GPIO_BUTTON_LEFT);
+    int rightPressed = readGPIOPin(GPIO_BUTTON_RIGHT);
+    int upPressed = readGPIOPin(GPIO_BUTTON_UP);
+
 typedef enum
 {
     STATE_QUIT = 0,

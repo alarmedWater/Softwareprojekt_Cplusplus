@@ -39,9 +39,6 @@ $(TARGET): $(OBJECTS)
 %.o: %$(SRC_EXT) %$(HDR_EXT)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Regel zum Bereinigen des Projekts
+# Regel zum Bereinigen des Projekts, entfernt .o Dateien und das ausführbare Ziel
 clean:
 	rm -f $(TARGET) $(OBJECTS)
-
-# Doxygen-Kommentare
-# @brief Die Datei definiert Regeln für das Erstellen und Reinigen des SDL Platformer-Projekts.
