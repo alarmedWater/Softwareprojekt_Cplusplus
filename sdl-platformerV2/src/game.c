@@ -613,6 +613,7 @@ static void processFrame()
 
         // Handle custom button press events for movement and interactions
         case BUTTON_LEFT_PRESSED:
+            printf("case BUTTON_LEFT_PRESSED\n");
             movePlayerLeft();
             break;
         case BUTTON_RIGHT_PRESSED:
