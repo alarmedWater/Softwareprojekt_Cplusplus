@@ -28,6 +28,7 @@ void initializeGPIO() {
 }
 
 int readLeftButton() {
+    printf("readLeftisCalled!");
     return digitalRead(BUTTON_PIN_LEFT) == 0; // Button is pressed when pin is LOW
 }
 
