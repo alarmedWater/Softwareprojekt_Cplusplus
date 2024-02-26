@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <gpio_control.h>
 
 // ///{
 //     // Example GPIO read function, you need to implement it
@@ -617,13 +618,13 @@ static void processFrame()
         case BUTTON_RIGHT_PRESSED:
             movePlayerRight();
             break;
-        case BUTTON_UP_PRESSED: // Make sure this custom event is defined and generated correctly
+        case BUTTON_UP_PRESSED: 
             movePlayerUp();
             break;
-        case BUTTON_DOWN_PRESSED: // Make sure this custom event is defined and generated correctly
+        case BUTTON_DOWN_PRESSED: 
             movePlayerDown();
             break;
-        case BUTTON_SPACE_PRESSED: // Make sure this custom event is defined and generated correctly
+        case BUTTON_SPACE_PRESSED: 
             playerInteract();
             break;
 
@@ -634,7 +635,7 @@ static void processFrame()
 
     // Additional input processing logic can be placed here, if necessary
     // For example, handling continuous actions or updating game state based on input
-}
+
 
 // Process user input and game logic
 const double current_time = getElapsedTime();
