@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <wiringPi.h>
-#include <unistd.h> // For sleep()
+#include <unistd.h> 
+#include <stdlib.h>
 
 // Define your GPIO pin numbers here
 #define BUTTON_PIN_LEFT 25  // WiringPi pin number for left button
