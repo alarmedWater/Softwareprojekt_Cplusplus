@@ -699,6 +699,7 @@ void initGame()
     initTypes();
     initPlayer(&player);
     initLevels();
+    initGPIO();
 
     game.keystate = SDL_GetKeyboardState(NULL);
     game.state = STATE_PLAYING;
@@ -712,6 +713,7 @@ void runGame()
     {
         processFrame();
         waitForNextFrame();
+        pollGPIOAndPushEvents();
     }
 }
 

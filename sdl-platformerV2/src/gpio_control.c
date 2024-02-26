@@ -8,9 +8,9 @@
 #define BUTTON_PIN_SPACE 21 // WiringPi pin number for space button
 
 
-void initializeGPIO() {
+void initGPIO() {
     if (wiringPiSetup() == -1) {
-        printf("wiringPi setup failed.\n");
+       printf("wiringPi setup failed.\n");
         exit(1); // Exit if wiringPi setup fails
     }
 
@@ -25,6 +25,7 @@ void initializeGPIO() {
     pullUpDnControl(BUTTON_PIN_DOWN, PUD_UP);
     pinMode(BUTTON_PIN_SPACE, INPUT);
     pullUpDnControl(BUTTON_PIN_SPACE, PUD_UP);
+      printf("wiringPi setup  successe!.\n");
 }
 
 int readLeftButton() {
