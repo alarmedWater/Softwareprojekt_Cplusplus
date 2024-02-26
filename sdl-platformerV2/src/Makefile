@@ -14,6 +14,9 @@ CFLAGS=
 # SDL-Bibliothekspfade und -Flags
 SDL_FLAGS=-I/usr/include/SDL2 -lSDL2 -lSDL2_ttf
 
+# WiringPi-Bibliothek
+WIRINGPI_LIB=-lwiringPi
+
 # Mathematikbibliothek
 MATH_LIB=-lm
 
@@ -33,7 +36,7 @@ all: $(TARGET)
 
 # Regeln zum Erstellen des ausführbaren Ziels
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $^ $(SDL_FLAGS) $(MATH_LIB) -o $@
+	$(CC) $(CFLAGS) $^ $(SDL_FLAGS) $(WIRINGPI_LIB) $(MATH_LIB) -o $@
 
 # Regel zur Erstellung von Objektdateien
 %.o: %$(SRC_EXT) %$(HDR_EXT)

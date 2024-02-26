@@ -2,7 +2,7 @@
 #define GPIO_CONTROL_H
 
 #include <wiringPi.h>
-#include <SDL2/SDL.h> // Stellen Sie sicher, dass SDL2 korrekt eingebunden ist, falls Sie SDL_Event und SDL_PushEvent verwenden
+#include <SDL2/SDL.h> 
 
 // GPIO Pin-Definitionen
 #define BUTTON_PIN_LEFT 25
