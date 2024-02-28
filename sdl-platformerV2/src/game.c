@@ -713,8 +713,9 @@ void runGame()
 
     while (game.state != STATE_QUIT)
     {
+        pollGPIOAndPushEvents();
         processFrame();
         waitForNextFrame();
-        pollGPIOAndPushEvents();
+        
     }
 }
