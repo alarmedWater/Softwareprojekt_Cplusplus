@@ -39,7 +39,7 @@ void initGPIO() {
 }
 
 int readLeftButton() {
-    return 1; //digitalRead(BUTTON_PIN_LEFT) == 0; // Button is pressed when pin is LOW
+    return digitalRead(BUTTON_PIN_LEFT) == 0; // Button is pressed when pin is LOW
 }
 
 int readRightButton() {
@@ -59,27 +59,33 @@ int readSpaceButton() {
 
 
 void pollGPIOAndPushEvents() {
-    static int lastLeftState = 0, lastRightState = 0, lastUpState = 0, lastDownState = 0, lastSpaceState = 0;
-    static long lastDebounceTime[5] = {0}; // Array to track the last debounce time for each button
+     SDL_Event event;
+        SDL_zero(event);
+        event.type = BUTTON_LEFT_PRESSED; // Simulate left button press
+        SDL_PushEvent(&event);
+        usleep(100000); // Prevent flooding the event queue
+        return; // Skip the rest of the function
+    // static int lastLeftState = 0, lastRightState = 0, lastUpState = 0, lastDownState = 0, lastSpaceState = 0;
+    // static long lastDebounceTime[5] = {0}; // Array to track the last debounce time for each button
 
-    // Poll each button and push events for state changes
-    int currentStates[] = {readLeftButton(), readRightButton(), readUpButton(), readDownButton(), readSpaceButton()};
-    int *lastStates[] = {&lastLeftState, &lastRightState, &lastUpState, &lastDownState, &lastSpaceState};
-    Uint32 events[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
+    // // Poll each button and push events for state changes
+    // int currentStates[] = {readLeftButton(), readRightButton(), readUpButton(), readDownButton(), readSpaceButton()};
+    // int *lastStates[] = {&lastLeftState, &lastRightState, &lastUpState, &lastDownState, &lastSpaceState};
+    // Uint32 events[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
     
-    long currentTime = getCurrentTimeMillis();
+    // long currentTime = getCurrentTimeMillis();
 
-    for (int i = 0; i < sizeof(currentStates) / sizeof(currentStates[0]); ++i) {
-        if (currentStates[i] != *lastStates[i] && (currentTime - lastDebounceTime[i]) > DEBOUNCE_TIME) {
-            if (currentStates[i] == 1) { // Button press detected
-                SDL_Event event;
-                SDL_zero(event);
-                event.type = events[i];
-                printf("Button %d pressed, pushing event\n", i);
-                SDL_PushEvent(&event);
-            }
-            *lastStates[i] = currentStates[i]; // Update last state
-            lastDebounceTime[i] = currentTime; // Update last debounce time
-        }
-    }
+    // for (int i = 0; i < sizeof(currentStates) / sizeof(currentStates[0]); ++i) {
+    //     if (currentStates[i] != *lastStates[i] && (currentTime - lastDebounceTime[i]) > DEBOUNCE_TIME) {
+    //         if (currentStates[i] == 1) { // Button press detected
+    //             SDL_Event event;
+    //             SDL_zero(event);
+    //             event.type = events[i];
+    //             printf("Button %d pressed, pushing event\n", i);
+    //             SDL_PushEvent(&event);
+    //         }
+    //         *lastStates[i] = currentStates[i]; // Update last state
+    //         lastDebounceTime[i] = currentTime; // Update last debounce time
+    //     }
+    // }
 }
