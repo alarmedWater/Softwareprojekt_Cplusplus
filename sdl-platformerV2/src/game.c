@@ -216,7 +216,7 @@ void handleNoDirection()
     }
     player.vx = 0;
 }
-
+/*
 // Procces Input with buttons:
 static void processInput()
 {
@@ -258,8 +258,8 @@ static void processInput()
     // Additional logic for handling inputs not covered by SDL events goes here
     // For example, continuous movement or actions while a key/button is held down
 }
+*/
 
-/*
 //Procces Input with keyboard:
 static void processInput()
 {
@@ -350,11 +350,10 @@ static void processInput()
         }
     }
 }
-*/
+
 
 static void processPlayer()
 {
-    printf("reached Fuzntion prittess");
     // Movement
     const double dt = getElapsedFrameTime() / 1000.0;
     const double hitw = (CELL_SIZE - player.type->body.w) / 2;
@@ -374,7 +373,7 @@ static void processPlayer()
     // ... Left
     if (sprite.left < cell.left && player.vx <= 0)
     {
-         printf("Player procces position: x=%f, vx=%f\n", player.x, player.vx);
+     
         if (isSolid(r, c - 1, SOLID_RIGHT) ||
             (sprite.top + hith < cell.top && isSolid(r - 1, c - 1, SOLID_RIGHT)) ||
             (sprite.bottom - hith > cell.bottom && isSolid(r + 1, c - 1, SOLID_RIGHT)))
