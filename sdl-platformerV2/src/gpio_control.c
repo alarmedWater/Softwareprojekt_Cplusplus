@@ -7,6 +7,16 @@
 #define BUTTON_PIN_DOWN 1  // WiringPi pin number for down button
 #define BUTTON_PIN_SPACE 21 // WiringPi pin number for space button
 
+// Debounce duration in milliseconds
+#define DEBOUNCE_TIME 200
+
+// Utility function to get current time in milliseconds
+long getCurrentTimeMillis() {
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return (time.tv_sec * 1000) + (time.tv_usec / 1000);
+}
+
 
 void initGPIO() {
     if (wiringPiSetup() == -1) {
@@ -51,27 +61,25 @@ int readSpaceButton() {
 
 void pollGPIOAndPushEvents() {
     static int lastLeftState = 0, lastRightState = 0, lastUpState = 0, lastDownState = 0, lastSpaceState = 0;
+    static long lastDebounceTime[5] = {0}; // Array to track the last debounce time for each button
 
     // Poll each button and push events for state changes
-    int currentStates[] = {
-        readLeftButton(), readRightButton(), readUpButton(), readDownButton(), readSpaceButton()
-    };
-    int *lastStates[] = {
-        &lastLeftState, &lastRightState, &lastUpState, &lastDownState, &lastSpaceState
-    };
-    Uint32 events[] = {
-        BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED
-    };
+    int currentStates[] = {readLeftButton(), readRightButton(), readUpButton(), readDownButton(), readSpaceButton()};
+    int *lastStates[] = {&lastLeftState, &lastRightState, &lastUpState, &lastDownState, &lastSpaceState};
+    Uint32 events[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
+    
+    long currentTime = getCurrentTimeMillis();
 
     for (int i = 0; i < sizeof(currentStates) / sizeof(currentStates[0]); ++i) {
-        if (currentStates[i] != *lastStates[i]) {
-            if (currentStates[i] == 1) {
+        if (currentStates[i] != *lastStates[i] && (currentTime - lastDebounceTime[i]) > DEBOUNCE_TIME) {
+            if (currentStates[i] == 1) { // Button press detected
                 SDL_Event event;
                 SDL_zero(event);
                 event.type = events[i];
                 SDL_PushEvent(&event);
             }
-            *lastStates[i] = currentStates[i];
+            *lastStates[i] = currentStates[i]; // Update last state
+            lastDebounceTime[i] = currentTime; // Update last debounce time
         }
     }
 }
