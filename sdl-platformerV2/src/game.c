@@ -133,7 +133,10 @@ void movePlayerLeft()
     }
     player.anim.flip = SDL_FLIP_HORIZONTAL;
     player.vx = -PLAYER_SPEED_RUN;
+    printf("Player position: x=%f, vx=%f\n", player.x, player.vx);
 }
+
+
 
 void movePlayerRight()
 {
