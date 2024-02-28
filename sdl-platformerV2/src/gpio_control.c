@@ -39,7 +39,6 @@ void initGPIO() {
 }
 
 int readLeftButton() {
-    printf("readLeftisCalled!");
     return digitalRead(BUTTON_PIN_LEFT) == 0; // Button is pressed when pin is LOW
 }
 
@@ -76,6 +75,7 @@ void pollGPIOAndPushEvents() {
                 SDL_Event event;
                 SDL_zero(event);
                 event.type = events[i];
+                printf("Button %d pressed, pushing event\n", i);
                 SDL_PushEvent(&event);
             }
             *lastStates[i] = currentStates[i]; // Update last state
