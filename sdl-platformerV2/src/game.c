@@ -118,6 +118,8 @@ void completeLevel()
 
 void movePlayerLeft()
 {
+    printf("Player position: x=%f, vx=%f\n", player.x, player.vx);
+
     if (!player.onLadder)
     {
         if (!player.inAir)
