@@ -373,6 +373,7 @@ static void processPlayer()
     // ... Left
     if (sprite.left < cell.left && player.vx <= 0)
     {
+         printf("Player procces position: x=%f, vx=%f\n", player.x, player.vx);
         if (isSolid(r, c - 1, SOLID_RIGHT) ||
             (sprite.top + hith < cell.top && isSolid(r - 1, c - 1, SOLID_RIGHT)) ||
             (sprite.bottom - hith > cell.bottom && isSolid(r + 1, c - 1, SOLID_RIGHT)))
