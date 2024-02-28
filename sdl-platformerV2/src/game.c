@@ -354,6 +354,7 @@ static void processInput()
 
 static void processPlayer()
 {
+    printf("reached Fuzntion prittess");
     // Movement
     const double dt = getElapsedFrameTime() / 1000.0;
     const double hitw = (CELL_SIZE - player.type->body.w) / 2;
@@ -650,7 +651,6 @@ const double current_time = getElapsedTime();
 if (game.state == STATE_PLAYING)
 {
     processInput();
-    printf("reached processplayer call!");
     processPlayer();
     processObjects();
 }
