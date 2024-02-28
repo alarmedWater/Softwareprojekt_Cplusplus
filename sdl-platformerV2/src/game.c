@@ -650,6 +650,7 @@ const double current_time = getElapsedTime();
 if (game.state == STATE_PLAYING)
 {
     processInput();
+    printf("reached processplayer call!");
     processPlayer();
     processObjects();
 }
