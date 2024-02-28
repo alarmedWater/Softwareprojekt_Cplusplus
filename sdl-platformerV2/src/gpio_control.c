@@ -8,7 +8,7 @@
 #define BUTTON_PIN_SPACE 21 // WiringPi pin number for space button
 
 // Debounce duration in milliseconds
-#define DEBOUNCE_TIME 200
+#define DEBOUNCE_TIME 20
 
 // Utility function to get current time in milliseconds
 long getCurrentTimeMillis() {
@@ -39,7 +39,7 @@ void initGPIO() {
 }
 
 int readLeftButton() {
-    return digitalRead(BUTTON_PIN_LEFT) == 0; // Button is pressed when pin is LOW
+    return 1; //digitalRead(BUTTON_PIN_LEFT) == 0; // Button is pressed when pin is LOW
 }
 
 int readRightButton() {
