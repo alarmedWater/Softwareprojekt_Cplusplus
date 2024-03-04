@@ -11,7 +11,7 @@ extern Player player;
 
 void initializeGame();
 void runGame();
-void handelExit();
+
 
 void setLevel( int r, int c );
 void completeLevel();
