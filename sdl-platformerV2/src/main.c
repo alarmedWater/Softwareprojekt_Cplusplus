@@ -3,6 +3,6 @@
 int main( int argc, char* argv[] )
 {
     initializeGame();
-    runGame();
+    handleGameLoop();
     return 0;
 }
