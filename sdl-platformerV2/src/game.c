@@ -713,7 +713,7 @@ void initializeGame()
 
 void runGameLoop()
 {
-    startFramecontroler(FRAME_RATE, MAX_DELTA_TIME);
+    startFrameControler(FRAME_RATE, MAX_DELTA_TIME);
 
     while (game.state != STATE_QUIT)
     {
