@@ -1,115 +1,86 @@
-#include "framecontrol.h"
+#include "frame_control.h"
 #include "helpers.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <time.h>
-typedef long long Time;                  // Nanoseconds
-static const Time TIME_UNDEFINED = -1;
 
+typedef long long time_ns; // Nanoseconds
+static const time_ns TIME_UNDEFINED = -1;
 
-static struct
-{
+static struct {
     int started;
-    Time startTime;
-    Time prevFrameTime;
-    Time elapsedFrameTime;
-    Time framePeriod;
-    unsigned long frameCount;
-    double maxDeltaTime;
-    double timePerMs;
-} frameControler = {0};
+    time_ns start_time;
+    time_ns prev_frame_time;
+    time_ns elapsed_frame_time;
+    time_ns frame_period;
+    unsigned long frame_count;
+    double max_delta_time;
+    double time_per_ms;
+} frame_controller = {0};
 
-
-static inline double timeToMs( Time time )
-{
-    return time / frameControler.timePerMs;
+static inline double time_to_ms(time_ns time) {
+    return time / frame_controller.time_per_ms;
 }
 
-static inline Time msToTime( double ms )
-{
-    return ms * frameControler.timePerMs;
+static inline time_ns ms_to_time(double ms) {
+    return ms * frame_controller.time_per_ms;
 }
 
-static Time getCurrentTime()
-{
-
+static time_ns get_current_time() {
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC, &t);
-    return t.tv_sec * (Time)1000000000 + t.tv_nsec;
+    return t.tv_sec * (time_ns)1000000000 + t.tv_nsec;
 }
 
-// If fps <= 0, new frame will be ready right after the previous one is handled,
-// i.e. there will be no fps limit.
-// 
-// The maxDeltaTime is the maximum time increment which can be correctly handled,
-// in ms. If it's <= 0, there will be no increment limit.
-//
-// The maxDeltaTime is used because, if the frame takes too long, the game may
-// change more than we can handle: e.g. some object may move too far, across the
-// walls. To solve this, the long frame can be handled as multiple shorter frames,
-// each <= maxDeltaTime. Or, if it's not required to sync the game time with the
-// real time, the long frame can be simply truncated to maxDeltaTime. This is done
-// in getElapsedFrameTime(), so that each long frame will be treated as a shorter
-// one (the game will slow down at these moments). For more information, see
-// https://gafferongames.com/post/fix_your_timestep/
-void startFrameControler( int fps, double maxDeltaTime )
-{
-    frameControler.timePerMs = 1000000;
-    frameControler.startTime = getCurrentTime();
-    ensure(frameControler.startTime != TIME_UNDEFINED, "startFrameControler(): Can't get current time");
-    frameControler.prevFrameTime = frameControler.startTime;
-    frameControler.elapsedFrameTime = 0;
-    frameControler.framePeriod = fps > 0 ? msToTime(1000.0 / fps) : 0;
-    frameControler.frameCount = 0;
-    frameControler.maxDeltaTime = maxDeltaTime;
-
-    frameControler.started = 1;
+void frame_control_start(int fps, double max_delta_time) {
+    frame_controller.time_per_ms = 1000000;
+    frame_controller.start_time = get_current_time();
+    ensure(frame_controller.start_time != TIME_UNDEFINED, "frame_control_start: Can't get current time");
+    frame_controller.prev_frame_time = frame_controller.start_time;
+    frame_controller.elapsed_frame_time = 0;
+    frame_controller.frame_period = fps > 0 ? ms_to_time(1000.0 / fps) : 0;
+    frame_controller.frame_count = 0;
+    frame_controller.max_delta_time = max_delta_time;
+    frame_controller.started = 1;
 }
 
-void stopFrameControler()
-{
-    if (!frameControler.started) {
+void frame_control_stop() {
+    if (!frame_controller.started) {
         return;
     }
+    frame_controller.started = 0; // Ensure to mark the controller as stopped.
 }
 
-void waitForNextFrame()
-{
-    const Time nextFrameTime = frameControler.prevFrameTime + frameControler.framePeriod;
-    Time currentTime = getCurrentTime();
+void frame_control_wait_for_next_frame() {
+    const time_ns next_frame_time = frame_controller.prev_frame_time + frame_controller.frame_period;
+    time_ns current_time = get_current_time();
 
-    while (currentTime < nextFrameTime) {
-        if (nextFrameTime - currentTime > frameControler.timePerMs) {
-            SDL_Delay(1);
+    while (current_time < next_frame_time) {
+        if (next_frame_time - current_time > frame_controller.time_per_ms) {
+            SDL_Delay(1); // Sleep for 1ms to reduce CPU usage
         } else {
-            // Just spin in the loop, because this can be more precise
-            // than system delay
+            // Spin-wait for precise timing
         }
-        currentTime = getCurrentTime();
+        current_time = get_current_time();
     }
 
-    frameControler.elapsedFrameTime = frameControler.prevFrameTime ? currentTime - frameControler.prevFrameTime : 0;
-    frameControler.prevFrameTime = currentTime;
-    frameControler.frameCount += 1;
+    frame_controller.elapsed_frame_time = frame_controller.prev_frame_time ? current_time - frame_controller.prev_frame_time : 0;
+    frame_controller.prev_frame_time = current_time;
+    frame_controller.frame_count++;
 }
 
-
-
-double getElapsedTime()
-{
-    return timeToMs(getCurrentTime() - frameControler.startTime);
+double frame_control_get_elapsed_time() {
+    return time_to_ms(get_current_time() - frame_controller.start_time);
 }
 
-double getCurrentFps()
-{
-    return frameControler.frameCount / (timeToMs(frameControler.prevFrameTime - frameControler.startTime) / 1000.0);
+double frame_control_get_current_fps() {
+    return frame_controller.frame_count / (time_to_ms(frame_controller.prev_frame_time - frame_controller.start_time) / 1000.0);
 }
 
-double getElapsedFrameTime()
-{
-    const double elapsedTime = timeToMs(frameControler.elapsedFrameTime);
-    if (frameControler.maxDeltaTime > 0 && elapsedTime > frameControler.maxDeltaTime) {
-        return frameControler.maxDeltaTime;
+double frame_control_get_elapsed_frame_time() {
+    const double elapsed_time = time_to_ms(frame_controller.elapsed_frame_time);
+    if (frame_controller.max_delta_time > 0 && elapsed_time > frame_controller.max_delta_time) {
+        return frame_controller.max_delta_time;
     }
-    return elapsedTime;
+    return elapsed_time;
 }

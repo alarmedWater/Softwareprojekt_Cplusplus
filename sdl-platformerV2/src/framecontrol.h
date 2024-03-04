@@ -1,11 +1,12 @@
-#ifndef FRAMECONTROL_H
-#define FRAMECONTROL_H
+#ifndef FRAME_CONTROL_H
+#define FRAME_CONTROL_H
 
-void startFrameControler( int fps, double maxDeltaTime );
-void stopFrameControler();      // Must be called after startFrameControler(), before the program exits
-void waitForNextFrame();
-double getElapsedFrameTime(); // ms
-double getElapsedTime();      // ms
-double getCurrentFps();
+void frame_control_start(int fps, double max_delta_time);
+void frame_control_stop(void);
+void frame_control_wait_for_next_frame(void);
+double frame_control_get_elapsed_frame_time(void); // milliseconds
+double frame_control_get_elapsed_time(void); // milliseconds
+double frame_control_get_current_fps(void);
 
-#endif
+#endif /* FRAME_CONTROL_H */
+
