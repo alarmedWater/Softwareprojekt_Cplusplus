@@ -18,9 +18,7 @@ char *levelsString = NULL; // Initialize global pointers to NULL
 
 // Sprite Manipulation Functions
 static void changeSprite(ObjectTypeId typeId, int spriteRow, int spriteColumn);
-static void changeSprites_Castle(void);
-static void changeSprites_Forest(void);
-static void changeSprites_Underground(void);
+static void addGraficToSprites(void);
 
 // Level Initialization and Management
 static void initLevelsFromString(const char *string);
@@ -33,43 +31,8 @@ static void changeSprite(ObjectTypeId typeId, int spriteRow, int spriteColumn)
     type->sprite.x = spriteColumn * SPRITE_SIZE;
 }
 
-static void changeSprites_Castle()
-{
-    changeSprite(TYPE_WALL_TOP, 4, 6);
-    changeSprite(TYPE_WALL, 5, 6);
-    changeSprite(TYPE_WALL_FAKE, 5, 6);
-    changeSprite(TYPE_WALL_STAIR, 4, 6);
-    changeSprite(TYPE_GROUND_TOP, 6, 3);
-    changeSprite(TYPE_GROUND, 7, 3);
-    changeSprite(TYPE_GROUND_FAKE, 7, 3);
-    changeSprite(TYPE_GROUND_STAIR, 6, 3);
-    changeSprite(TYPE_GRASS, 40, 0);
-    changeSprite(TYPE_GRASS_BIG, 40, 1);
-    changeSprite(TYPE_PILLAR_TOP, 26, 2);
-    changeSprite(TYPE_PILLAR, 27, 2);
-    changeSprite(TYPE_PILLAR_BOTTOM, 28, 2);
-    changeSprite(TYPE_DOOR, 10, 0);
-    changeSprite(TYPE_LADDER, 12, 2);
-}
 
-static void changeSprites_Forest()
-{
-    changeSprite(TYPE_WALL_TOP, 4, 6);
-    changeSprite(TYPE_WALL, 5, 6);
-    changeSprite(TYPE_WALL_STAIR, 4, 6);
-    changeSprite(TYPE_GROUND_TOP, 6, 1);
-    changeSprite(TYPE_GROUND, 7, 1);
-    changeSprite(TYPE_GROUND_STAIR, 6, 1);
-    changeSprite(TYPE_GRASS, 40, 0);
-    changeSprite(TYPE_GRASS_BIG, 40, 1);
-    changeSprite(TYPE_PILLAR_TOP, 48, 1);
-    changeSprite(TYPE_PILLAR, 49, 1);
-    changeSprite(TYPE_PILLAR_BOTTOM, 50, 1);
-    changeSprite(TYPE_DOOR, 10, 0);
-    changeSprite(TYPE_LADDER, 12, 2);
-}
-
-static void changeSprites_Underground()
+static void addGraficToSprites()
 {
     changeSprite(TYPE_WALL_TOP, 4, 6);
     changeSprite(TYPE_WALL, 5, 6);
@@ -413,7 +376,7 @@ void initLevels()
     {
         for (int c = 0; c < LEVEL_COUNTX; c++)
         {
-            levels[r][c].init = changeSprites_Underground;
+            levels[r][c].init = addGraficToSprites();
         }
     }
 }
