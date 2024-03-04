@@ -376,7 +376,7 @@ void initLevels()
     {
         for (int c = 0; c < LEVEL_COUNTX; c++)
         {
-            levels[r][c].init = addGraficToSprites();
+            levels[r][c].init = addGraficToSprites;
         }
     }
 }
