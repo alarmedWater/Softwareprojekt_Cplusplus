@@ -10,7 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "game.h"
-#include "framecontrol.h"
+#include "frame_control.h"
 #include "helpers.h"
 #include "render.h"
 #include "levels.h"
