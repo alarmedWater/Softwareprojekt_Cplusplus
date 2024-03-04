@@ -705,7 +705,7 @@ void initializeGame()
     initializeTypes();
     initializePlayer(&player);
     initializeLevels();
-    initializeGPIO();
+    gpio_initialize();
 
     game.keystate = SDL_GetKeyboardState(NULL);
     game.state = STATE_PLAYING;
