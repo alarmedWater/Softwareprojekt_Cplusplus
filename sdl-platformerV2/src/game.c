@@ -711,7 +711,7 @@ void initializeGame()
     game.state = STATE_PLAYING;
 }
 
-void runGameLoop()
+void handleGameLoop()
 {
     startFrameControler(FRAME_RATE, MAX_DELTA_TIME);
 
