@@ -692,7 +692,7 @@ printf("fps=%f, objects=%d\n", getCurrentFps(), level->objects.count);
 
 static void onExit()
 {
-    stopFrameControl();
+    stopFrameControler();
 
     TTF_Quit();
     SDL_Quit();
