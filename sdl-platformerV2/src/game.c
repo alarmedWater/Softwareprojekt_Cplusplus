@@ -355,7 +355,7 @@ static void processInput()
 static void processPlayer()
 {
     // Movement
-    const double dt = getElapsedFrameTime() / 1000.0;
+    const double dt = get_elapsed_frame_time() / 1000.0;
     const double hitw = (CELL_SIZE - player.type->body.w) / 2;
     const double hith = hitw;
 
@@ -645,7 +645,7 @@ static void processFrame()
 
 
 // Process user input and game logic
-const double current_time = getElapsedTime();
+const double current_time = get_elapsed_time();
 
 if (game.state == STATE_PLAYING)
 {
@@ -689,7 +689,7 @@ if (current_time >= game.cleanTime)
 printf("fps=%f, objects=%d\n", getCurrentFps(), level->objects.count);
 #endif
 }
-
+s
 static void handelExit()
 {
     stopFrameControler();
@@ -719,7 +719,7 @@ void handleGameLoop()
     {
         pollGPIOAndPushEvents();
         processFrame();
-        waitForNextFrame();
+        wait_for_next_frame();
         
     }
 }

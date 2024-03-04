@@ -2,6 +2,7 @@
     "files.associations": {
         "levels.h": "c",
         "game.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "render.h": "c"
     }
 }
