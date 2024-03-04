@@ -2,17 +2,10 @@
 #include "helpers.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
-
-#ifdef _WIN32
-#include <windows.h>
-typedef LONGLONG Time;                   // Ticks
-static const Time TIME_UNDEFINED = -1;
-static const int SYSTEM_TIMER_PERIOD = 1 // Milliseconds
-#else
 #include <time.h>
 typedef long long Time;                  // Nanoseconds
 static const Time TIME_UNDEFINED = -1;
-#endif
+
 
 static struct
 {
@@ -39,15 +32,10 @@ static inline Time msToTime( double ms )
 
 static Time getCurrentTime()
 {
-#ifdef _WIN32
-    LARGE_INTEGER i;
-    ensure(QueryPerformanceCounter(&i), "getCurrentTime(): QueryPerformanceCounter() failed");
-    return i.QuadPart;
-#else
+
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC, &t);
     return t.tv_sec * (Time)1000000000 + t.tv_nsec;
-#endif
 }
 
 // If fps <= 0, new frame will be ready right after the previous one is handled,
@@ -66,13 +54,7 @@ static Time getCurrentTime()
 // https://gafferongames.com/post/fix_your_timestep/
 void startFrameControl( int fps, double maxDeltaTime )
 {
-#ifdef _WIN32
-    LARGE_INTEGER i;
-    ensure(QueryPerformanceFrequency(&i), "startFrameControl(): QueryPerformanceFrequency() failed");
-    control.timePerMs = i.QuadPart / 1000.0;
-#else
     control.timePerMs = 1000000;
-#endif
     control.startTime = getCurrentTime();
     ensure(control.startTime != TIME_UNDEFINED, "startFrameControl(): Can't get current time");
     control.prevFrameTime = control.startTime;
@@ -80,11 +62,7 @@ void startFrameControl( int fps, double maxDeltaTime )
     control.framePeriod = fps > 0 ? msToTime(1000.0 / fps) : 0;
     control.frameCount = 0;
     control.maxDeltaTime = maxDeltaTime;
-#ifdef _WIN32
-    // Request accuracy of the system timer. NOTE: This call must
-    // be matched with timeEndPeriod(), with the same parameter.
-    ensure(timeBeginPeriod(SYSTEM_TIMER_PERIOD) == TIMERR_NOERROR, "timeBeginPeriod() failed");
-#endif
+
     control.started = 1;
 }
 
@@ -93,9 +71,6 @@ void stopFrameControl()
     if (!control.started) {
         return;
     }
-#ifdef _WIN32
-    timeEndPeriod(SYSTEM_TIMER_PERIOD);
-#endif
 }
 
 void waitForNextFrame()
