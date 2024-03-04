@@ -1,27 +1,24 @@
-#include "gpio_control.h"
 
-// Define your GPIO pin numbers here
-#define BUTTON_PIN_LEFT 25  // WiringPi pin number for left button
-#define BUTTON_PIN_RIGHT 24 // WiringPi pin number for right button
-#define BUTTON_PIN_UP 23    // WiringPi pin number for up button
-#define BUTTON_PIN_DOWN 1  // WiringPi pin number for down button
-#define BUTTON_PIN_SPACE 21 // WiringPi pin number for space button
+#include "gpio_control.h"
+#include <sys/time.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 // Debounce duration in milliseconds
 #define DEBOUNCE_TIME 20
 
 // Utility function to get current time in milliseconds
-long getCurrentTimeMillis() {
+long get_current_time_millis(void) {
     struct timeval time;
     gettimeofday(&time, NULL);
     return (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
 
-
-void initializeGPIO() {
+void gpio_initialize(void) {
     if (wiringPiSetup() == -1) {
-       printf("wiringPi setup failed.\n");
-        exit(1); // Exit if wiringPi setup fails
+        fprintf(stderr, "wiringPi setup failed.\n");
+        exit(EXIT_FAILURE); // Exit if wiringPi setup fails
     }
 
     // Initialize pins for left, right, up, down, and space buttons
@@ -35,36 +32,39 @@ void initializeGPIO() {
     pullUpDnControl(BUTTON_PIN_DOWN, PUD_UP);
     pinMode(BUTTON_PIN_SPACE, INPUT);
     pullUpDnControl(BUTTON_PIN_SPACE, PUD_UP);
-      printf("wiringPi setup  successe!.\n");
+    printf("GPIO setup success.\n");
 }
 
-int readLeftButton() {
-    return digitalRead(BUTTON_PIN_LEFT) == 0; // Button is pressed when pin is LOW
+int gpio_read_left_button(void) {
+    return digitalRead(BUTTON_PIN_LEFT) == LOW; // Button is pressed when pin is LOW
 }
 
-int readRightButton() {
-    return digitalRead(BUTTON_PIN_RIGHT) == 0; // Button is pressed when pin is LOW
-}
-int readUpButton() {
-    return digitalRead(BUTTON_PIN_UP) == 0; // Button is pressed when pin is LOW
+int gpio_read_right_button(void) {
+    return digitalRead(BUTTON_PIN_RIGHT) == LOW; // Button is pressed when pin is LOW
 }
 
-int readDownButton() {
-    return digitalRead(BUTTON_PIN_DOWN) == 0; // Button is pressed when pin is LOW
+int gpio_read_up_button(void) {
+    return digitalRead(BUTTON_PIN_UP) == LOW; // Button is pressed when pin is LOW
 }
 
-int readSpaceButton() {
-    return digitalRead(BUTTON_PIN_SPACE) == 0; // Button is pressed when pin is LOW
+int gpio_read_down_button(void) {
+    return digitalRead(BUTTON_PIN_DOWN) == LOW; // Button is pressed when pin is LOW
+}
+
+int gpio_read_space_button(void) {
+    return digitalRead(BUTTON_PIN_SPACE) == LOW; // Button is pressed when pin is LOW
+}
+
+void gpio_poll_and_push_events(void) {
+    // Example of directly pushing an event without debounce logic
+    SDL_Event event;
+    SDL_zero(event);
+    event.type = BUTTON_LEFT_PRESSED; // Simulate left button press
+    SDL_PushEvent(&event);
+    usleep(100000); // Prevent flooding the event queue
 }
 
 
-void pollGPIOAndPushEvents() {
-     SDL_Event event;
-        SDL_zero(event);
-        event.type = BUTTON_LEFT_PRESSED; // Simulate left button press
-        SDL_PushEvent(&event);
-        usleep(100000); // Prevent flooding the event queue
-        return; // Skip the rest of the function
     // static int lastLeftState = 0, lastRightState = 0, lastUpState = 0, lastDownState = 0, lastSpaceState = 0;
     // static long lastDebounceTime[5] = {0}; // Array to track the last debounce time for each button
 
@@ -88,4 +88,3 @@ void pollGPIOAndPushEvents() {
     //         lastDebounceTime[i] = currentTime; // Update last debounce time
     //     }
     // }
-}
