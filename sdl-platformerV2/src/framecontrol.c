@@ -52,7 +52,7 @@ static Time getCurrentTime()
 // in getElapsedFrameTime(), so that each long frame will be treated as a shorter
 // one (the game will slow down at these moments). For more information, see
 // https://gafferongames.com/post/fix_your_timestep/
-void startFramecontroler( int fps, double maxDeltaTime )
+void startFrameControler( int fps, double maxDeltaTime )
 {
     frameControler.timePerMs = 1000000;
     frameControler.startTime = getCurrentTime();
