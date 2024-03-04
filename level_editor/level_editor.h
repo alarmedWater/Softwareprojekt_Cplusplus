@@ -12,7 +12,7 @@ typedef struct {
 } Level;
 
 // Funktionen für den Level-Editor
-void initLevelGrid(Level *level);
+void initializeLevelGrid(Level *level);
 void handleMouseClick(SDL_MouseButtonEvent button, Level *level);
 void renderGrid(SDL_Renderer *renderer, const Level *level);
 void saveLevel(const Level *level);
@@ -32,7 +32,7 @@ typedef struct {
 } Level;
 
 // Funktionen für den Level-Editor
-void initLevelGrid(Level *level);
+void initializeLevelGrid(Level *level);
 void handleMouseClick(SDL_MouseButtonEvent button, Level *level);
 void renderGrid(SDL_Renderer *renderer, const Level *level);
 void saveLevel(const Level *level);

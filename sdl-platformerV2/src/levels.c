@@ -21,7 +21,7 @@ static void changeSprite(ObjectTypeId typeId, int spriteRow, int spriteColumn);
 static void addGraficToSprites(void);
 
 // Level Initialization and Management
-static void initLevelsFromString(const char *string);
+static void initializeLevelsFromString(const char *string);
 
 
 static void changeSprite(ObjectTypeId typeId, int spriteRow, int spriteColumn)
@@ -59,7 +59,7 @@ static inline const char getLevelChar(const char *levelString, int r, int c)
     return levelString[r * COLUMN_COUNT * LEVEL_COUNTX + c];
 }
 
-static void initLevelsFromString(const char *string)
+static void initializeLevelsFromString(const char *string)
 {
     struct
     {
@@ -74,7 +74,7 @@ static void initLevelsFromString(const char *string)
             const char *levelString = getLevelString(string, lr, lc);
 
             Level *level = &levels[lr][lc];
-            initLevel(level);
+            initializeLevel(level);
             level->r = lr;
             level->c = lc;
             ObjectArray_append(&level->objects, (Object *)&player);
@@ -350,7 +350,7 @@ char* loadLevelFromFile(const char* filename) {
     return levelsString;
 }
 
-void initLevels()
+void initializeLevels()
 {
     if (!loadLevelFromFile(levelPath))
     {
@@ -370,13 +370,13 @@ void initLevels()
     ensure(strlen(levelsString) == LEVEL_COUNTY * LEVEL_COUNTX * ROW_COUNT * COLUMN_COUNT,
            "The levels string does not match the levels count or size.");
 
-    initLevelsFromString(levelsString);
+    initializeLevelsFromString(levelsString);
 
     for (int r = 0; r < LEVEL_COUNTY; r++)
     {
         for (int c = 0; c < LEVEL_COUNTX; c++)
         {
-            levels[r][c].init = addGraficToSprites;
+            levels[r][c].initialize = addGraficToSprites;
         }
     }
 }

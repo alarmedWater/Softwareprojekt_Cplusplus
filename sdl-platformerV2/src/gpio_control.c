@@ -18,7 +18,7 @@ long getCurrentTimeMillis() {
 }
 
 
-void initGPIO() {
+void initializeGPIO() {
     if (wiringPiSetup() == -1) {
        printf("wiringPi setup failed.\n");
         exit(1); // Exit if wiringPi setup fails

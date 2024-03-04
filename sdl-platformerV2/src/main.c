@@ -2,7 +2,7 @@
 
 int main( int argc, char* argv[] )
 {
-    initGame();
+    initializeGame();
     runGame();
     return 0;
 }

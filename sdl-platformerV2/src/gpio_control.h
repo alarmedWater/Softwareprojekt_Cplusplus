@@ -19,7 +19,7 @@
 #define BUTTON_SPACE_PRESSED SDL_USEREVENT + 5
 
 // Funktionsdeklarationen
-void initGPIO();
+void initializeGPIO();
 int readLeftButton();
 int readRightButton();
 int readUpButton();

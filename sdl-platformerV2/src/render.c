@@ -21,14 +21,14 @@ static const int TEXT_FONT_SIZE = 8 * SIZE_FACTOR;
 
 
 // The text must be one-line
-static void initMessage( MessageId id, const char* text )
+static void initializeMessage( MessageId id, const char* text )
 {
     SDL_Surface* surface = TTF_RenderText_Solid(font, text, TEXT_COLOR);
     messages[id] = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 }
 
-void initRender( const char* spritesPath, const char* fontPath )
+void initializeRender( const char* spritesPath, const char* fontPath )
 {
     // Window and renderer
     SDL_CreateWindowAndRenderer(LEVEL_WIDTH * SIZE_FACTOR, LEVEL_HEIGHT * SIZE_FACTOR, 0, &window, &renderer);
@@ -36,7 +36,7 @@ void initRender( const char* spritesPath, const char* fontPath )
     // Sprites
     static const Uint8 transparent[3] = {90, 82, 104};
     SDL_Surface* surface = SDL_LoadBMP(spritesPath);
-    ensure(surface != NULL,  "initRender(): Can't load sprite sheet");
+    ensure(surface != NULL,  "initializeRender(): Can't load sprite sheet");
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, transparent[0], transparent[1], transparent[2]));
     sprites = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
@@ -47,9 +47,9 @@ void initRender( const char* spritesPath, const char* fontPath )
     ensure(font != NULL, "initRender(): Can't open font");
 
     // Messages
-    initMessage(MESSAGE_PLAYER_KILLED,  "You lost a life");
-    initMessage(MESSAGE_GAME_OVER,      "Game over");
-    initMessage(MESSAGE_LEVEL_COMPLETE, "Level complete!");
+    initializeMessage(MESSAGE_PLAYER_KILLED,  "You lost a life");
+    initializeMessage(MESSAGE_GAME_OVER,      "Game over");
+    initializeMessage(MESSAGE_LEVEL_COMPLETE, "Level complete!");
 }
 
 void drawSprite( SDL_Rect spriteRect, int x, int y, int frame, SDL_RendererFlip flip )

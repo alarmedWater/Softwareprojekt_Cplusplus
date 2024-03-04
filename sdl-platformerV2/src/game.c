@@ -105,9 +105,9 @@ void respawnPlayer()
 void setLevel(int r, int c)
 {
     level = &levels[r][c];
-    if (level->init)
+    if (level->initialize)
     {
-        level->init();
+        level->initialize();
     }
 }
 
@@ -698,14 +698,14 @@ static void onExit()
     SDL_Quit();
 }
 
-void initGame()
+void initializeGame()
 {
     atexit(onExit);
-    initRender("image/sprites.bmp", "font/PressStart2P.ttf");
-    initTypes();
-    initPlayer(&player);
-    initLevels();
-    initGPIO();
+    initializeRender("image/sprites.bmp", "font/PressStart2P.ttf");
+    initializeTypes();
+    initializePlayer(&player);
+    initializeLevels();
+    initializeGPIO();
 
     game.keystate = SDL_GetKeyboardState(NULL);
     game.state = STATE_PLAYING;

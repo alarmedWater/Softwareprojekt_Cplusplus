@@ -11,7 +11,7 @@ enum
 
 extern Level levels[LEVEL_COUNTY][LEVEL_COUNTX];
 
-void initLevels();
+void initializeLevels();
 char* loadLevelFromFile(const char* filename);
 
 #endif

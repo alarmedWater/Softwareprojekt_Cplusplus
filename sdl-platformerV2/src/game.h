@@ -9,7 +9,7 @@
 extern Level* level;
 extern Player player;
 
-void initGame();
+void initializeGame();
 void runGame();
 
 void setLevel( int r, int c );

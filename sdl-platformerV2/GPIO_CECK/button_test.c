@@ -10,7 +10,7 @@
 #define BUTTON_PIN_DOWN 22  // WiringPi pin number for down button
 #define BUTTON_PIN_SPACE 21 // WiringPi pin number for space button
 
-void initializeGPIO() {
+void initializeializeGPIO() {
     if (wiringPiSetup() == -1) {
         printf("Failed to setup WiringPi\n");
         exit(1);
@@ -30,7 +30,7 @@ void initializeGPIO() {
 }
 
 int main() {
-    initializeGPIO();
+    initializeializeGPIO();
 
     while(1) {
         if(digitalRead(BUTTON_PIN_LEFT) == 0) {

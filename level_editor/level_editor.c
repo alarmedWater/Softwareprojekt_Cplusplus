@@ -13,7 +13,7 @@ int main() {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
     char levelGrid[LEVEL_HEIGHT][LEVEL_WIDTH]; // Ihre Level-Daten
-    initLevelGrid(levelGrid); // Initialisierungsfunktion für das Grid
+    initializeLevelGrid(levelGrid); // Initialisierungsfunktion für das Grid
 
     bool running = true;
     while (running) {
@@ -39,7 +39,7 @@ int main() {
 }
 
 
-void initLevelGrid(char grid[LEVEL_HEIGHT][LEVEL_WIDTH]) {
+void initializeLevelGrid(char grid[LEVEL_HEIGHT][LEVEL_WIDTH]) {
     for (int i = 0; i < LEVEL_HEIGHT; i++) {
         for (int j = 0; j < LEVEL_WIDTH; j++) {
             grid[i][j] = ' '; // Leere Zelle

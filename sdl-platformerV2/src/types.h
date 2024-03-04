@@ -206,10 +206,10 @@ typedef struct
     ObjectArray objects;
     int r;
     int c;
-    void (*init)();
+    void (*initialize)();
 } Level;
 
-void ObjectArray_init( ObjectArray* objects );
+void ObjectArray_initialize( ObjectArray* objects );
 void ObjectArray_append( ObjectArray* objects, Object* object );
 void ObjectArray_free( ObjectArray* objects );
 void ObjectArray_clean( ObjectArray* objects );
@@ -217,10 +217,10 @@ void ObjectArray_sortByDepth( ObjectArray* objects );
 
 void createStaticObject( Level* level, ObjectTypeId typeId, int r, int c );
 Object* createDynamicObject( Level* level, ObjectTypeId typeId, int r, int c );
-void initObject( Object* object, ObjectTypeId typeId );
-void initPlayer( Player* player );
-void initLevel( Level* level );
-void initTypes();
+void initializeObject( Object* object, ObjectTypeId typeId );
+void initializePlayer( Player* player );
+void initializeLevel( Level* level );
+void initializeTypes();
 
 extern ObjectType objectTypes[TYPE_COUNT];
 
