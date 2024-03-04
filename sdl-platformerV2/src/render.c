@@ -1,6 +1,6 @@
 #include "render.h"
 #include "game.h"
-#include "framecontrol.h"
+#include "frame_control.h"
 #include "helpers.h"
 #include "SDL2/SDL_ttf.h"
 #include <string.h>
@@ -136,7 +136,7 @@ void drawScreen()
     }
 
     // Objects
-    const double dt = getElapsedFrameTime() / 1000.0;
+    const double dt = frame_control_get_elapsed_frame_time() / 1000.0;
     for (int i = 0; i < level->objects.count; ++ i) {
         Object* object = level->objects.array[i];
         Animation* anim = &object->anim;

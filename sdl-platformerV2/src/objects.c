@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include "levels.h"
 #include "game.h"
-#include "framecontrol.h"
+#include "frame_control.h"
 #include <math.h>
 
 
@@ -35,7 +35,7 @@ typedef enum
 // which the object could not fully move to.
 static int move( Object* object, int hitTest )
 {
-    const double dt = getElapsedFrameTime() / 1000.0;
+    const double dt = frame_control_get_elapsed_frame_time() / 1000.0;
     const double dx = limitAbs(object->vx, MAX_SPEED) * dt;
     const double dy = limitAbs(object->vy, MAX_SPEED) * dt;
 
@@ -179,7 +179,7 @@ void MovingEnemy_onFrame( Object* e )
         }
     }
 
-    e->state += getElapsedFrameTime();
+    e->state += frame_control_get_elapsed_frame_time();
 }
 
 void MovingEnemy_onHit( Object* e )
@@ -226,7 +226,7 @@ void ShootingEnemy_onFrame( Object* e )
     }
 
     if (e->state > SHOOTINGENEMY_MOVING)
-        e->state += getElapsedFrameTime();
+        e->state += frame_control_get_elapsed_frame_time();
 }
 
 
@@ -248,7 +248,7 @@ void Shot_onFrame( Object* e )
         }
 
     } else if (e->state <= SHOT_HIT) {
-        e->state += getElapsedFrameTime();
+        e->state += frame_control_get_elapsed_frame_time();
 
     } else {
         e->removed = 1;
@@ -334,7 +334,7 @@ void Item_onFrame( Object* item )
         // Nothing
 
     } else if (item->state <= ITEM_TAKEN) {
-        const double dt = getElapsedFrameTime() / 1000.0;
+        const double dt = frame_control_get_elapsed_frame_time() / 1000.0;
         item->anim.alpha -= (255 / ITEM_FADE_SPEED) * dt;
         if (item->anim.alpha < 0) {
             item->anim.alpha = 0;
@@ -386,7 +386,7 @@ void Fireball_onFrame( Object* e )
         setSpeed(e, m & DIRECTION_X ? -e->vx : e->vx, m & DIRECTION_Y ? -e->vy : e->vy);
     }
 
-    const int dt = getElapsedFrameTime();
+    const int dt = frame_control_get_elapsed_frame_time();
     e->data -= dt;
     if (e->data < 0) {
         if (rand() % 10 == 9) {
@@ -416,7 +416,7 @@ void Drop_onInit( Object* e )
 void Drop_onFrame( Object* e )
 {
     if (e->state <= DROP_WAITING) {
-        e->state += getElapsedFrameTime();
+        e->state += frame_control_get_elapsed_frame_time();
         if (e->state > DROP_CREATE) {
             e->state = DROP_CREATE;
         }
@@ -430,7 +430,7 @@ void Drop_onFrame( Object* e )
 
     } else if (e->state <= DROP_FALLING) {
         if (e->vy < 120) {
-            e->vy += 48 * getElapsedFrameTime() / 1000.0;
+            e->vy += 48 * frame_control_get_elapsed_frame_time() / 1000.0;
         }
         if (move(e, HITTEST_WALLS | HITTEST_LEVEL)) {
             move(e, HITTEST_NONE);
@@ -438,8 +438,8 @@ void Drop_onFrame( Object* e )
         }
 
     } else if (e->state <= DROP_FELL) {
-        e->state += getElapsedFrameTime();
-        e->anim.alpha -= ceil(255 * getElapsedFrameTime() / (DROP_FELL - DROP_FALLING));
+        e->state += frame_control_get_elapsed_frame_time();
+        e->anim.alpha -= ceil(255 * frame_control_get_elapsed_frame_time() / (DROP_FELL - DROP_FALLING));
         if (e->anim.alpha < 0) {
             e->anim.alpha = 0;
         }
@@ -488,7 +488,7 @@ void TeleportingEnemy_onFrame( Object* e )
 
     } else if (e->state <= TELEPORTINGENEMY_BEFORE_TELEPORT) {
         setAnimation(e, 2, 2, 0);
-        e->anim.alpha -= ceil(255 * getElapsedFrameTime() / (TELEPORTINGENEMY_TELEPORT - TELEPORTINGENEMY_BEFORE_TELEPORT));
+        e->anim.alpha -= ceil(255 * frame_control_get_elapsed_frame_time() / (TELEPORTINGENEMY_TELEPORT - TELEPORTINGENEMY_BEFORE_TELEPORT));
         if (e->anim.alpha < 0) {
             e->anim.alpha = 0;
         }
@@ -514,7 +514,7 @@ void TeleportingEnemy_onFrame( Object* e )
         e->anim.alpha = 0;
 
     } else if (e->state <= TELEPORTINGENEMY_AFTER_TELEPORT) {
-        e->anim.alpha += ceil(255 * getElapsedFrameTime() / (TELEPORTINGENEMY_AFTER_TELEPORT - TELEPORTINGENEMY_TELEPORT));
+        e->anim.alpha += ceil(255 * frame_control_get_elapsed_frame_time() / (TELEPORTINGENEMY_AFTER_TELEPORT - TELEPORTINGENEMY_TELEPORT));
         if (e->anim.alpha > 255) {
             e->anim.alpha = 255;
         }
@@ -524,7 +524,7 @@ void TeleportingEnemy_onFrame( Object* e )
         e->anim.alpha = 255;
     }
 
-    e->state += getElapsedFrameTime();
+    e->state += frame_control_get_elapsed_frame_time();
 }
 
 void TeleportingEnemy_onHit( Object* e )
@@ -550,7 +550,7 @@ void Platform_onFrame( Object* e )
 
 void Platform_onHit( Object* e )
 {
-    const double dt = getElapsedFrameTime() / 1000.0;
+    const double dt = frame_control_get_elapsed_frame_time() / 1000.0;
     const double dw = (CELL_SIZE - player.type->body.w) / 2.0;
     const double dh = (CELL_SIZE - player.type->body.h) / 2.0;
     const double border = 3;
@@ -589,7 +589,7 @@ void Spring_onInit( Object* e )
 void Spring_onFrame( Object* e )
 {
     if (e->state > 0) {
-        e->state -= getElapsedFrameTime();
+        e->state -= frame_control_get_elapsed_frame_time();
     } else {
         setAnimation(e, 0, 0, 0);
         e->state = 0;
@@ -610,7 +610,7 @@ void Cloud_onHit( Object* e )
 {
     if (player.y + CELL_HALF < e->y + CELL_SIZE) {
         if (player.vy > 0) {
-            player.y -= player.vy * 0.9 * getElapsedFrameTime() / 1000.0;
+            player.y -= player.vy * 0.9 * frame_control_get_elapsed_frame_time() / 1000.0;
         }
         player.inAir = 0;
     }
