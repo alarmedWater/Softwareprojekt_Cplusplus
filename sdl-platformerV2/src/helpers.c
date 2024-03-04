@@ -135,6 +135,6 @@ void ensure(int condition, const char* message)
 {
     if (!condition) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message, NULL);
-        handleExit(EXIT_FAILURE);
+        handelExit(EXIT_FAILURE);
     }
 }
