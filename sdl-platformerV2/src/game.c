@@ -690,7 +690,7 @@ printf("fps=%f, objects=%d\n", getCurrentFps(), level->objects.count);
 #endif
 }
 
-static void onExit()
+static void handleExit()
 {
     stopFrameControler();
 
@@ -700,7 +700,7 @@ static void onExit()
 
 void initializeGame()
 {
-    atexit(onExit);
+    atexit(handleExit);
     initializeRender("image/sprites.bmp", "font/PressStart2P.ttf");
     initializeTypes();
     initializePlayer(&player);
@@ -711,7 +711,7 @@ void initializeGame()
     game.state = STATE_PLAYING;
 }
 
-void runGame()
+void runGameLoop()
 {
     startFramecontroler(FRAME_RATE, MAX_DELTA_TIME);
 
