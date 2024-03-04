@@ -17,17 +17,17 @@ static struct
     unsigned long frameCount;
     double maxDeltaTime;
     double timePerMs;
-} control = {0};
+} frameControler = {0};
 
 
 static inline double timeToMs( Time time )
 {
-    return time / control.timePerMs;
+    return time / frameControler.timePerMs;
 }
 
 static inline Time msToTime( double ms )
 {
-    return ms * control.timePerMs;
+    return ms * frameControler.timePerMs;
 }
 
 static Time getCurrentTime()
@@ -52,34 +52,34 @@ static Time getCurrentTime()
 // in getElapsedFrameTime(), so that each long frame will be treated as a shorter
 // one (the game will slow down at these moments). For more information, see
 // https://gafferongames.com/post/fix_your_timestep/
-void startFrameControl( int fps, double maxDeltaTime )
+void startFramecontroler( int fps, double maxDeltaTime )
 {
-    control.timePerMs = 1000000;
-    control.startTime = getCurrentTime();
-    ensure(control.startTime != TIME_UNDEFINED, "startFrameControl(): Can't get current time");
-    control.prevFrameTime = control.startTime;
-    control.elapsedFrameTime = 0;
-    control.framePeriod = fps > 0 ? msToTime(1000.0 / fps) : 0;
-    control.frameCount = 0;
-    control.maxDeltaTime = maxDeltaTime;
+    frameControler.timePerMs = 1000000;
+    frameControler.startTime = getCurrentTime();
+    ensure(frameControler.startTime != TIME_UNDEFINED, "startFrameControler(): Can't get current time");
+    frameControler.prevFrameTime = frameControler.startTime;
+    frameControler.elapsedFrameTime = 0;
+    frameControler.framePeriod = fps > 0 ? msToTime(1000.0 / fps) : 0;
+    frameControler.frameCount = 0;
+    frameControler.maxDeltaTime = maxDeltaTime;
 
-    control.started = 1;
+    frameControler.started = 1;
 }
 
-void stopFrameControl()
+void stopFrameControler()
 {
-    if (!control.started) {
+    if (!frameControler.started) {
         return;
     }
 }
 
 void waitForNextFrame()
 {
-    const Time nextFrameTime = control.prevFrameTime + control.framePeriod;
+    const Time nextFrameTime = frameControler.prevFrameTime + frameControler.framePeriod;
     Time currentTime = getCurrentTime();
 
     while (currentTime < nextFrameTime) {
-        if (nextFrameTime - currentTime > control.timePerMs) {
+        if (nextFrameTime - currentTime > frameControler.timePerMs) {
             SDL_Delay(1);
         } else {
             // Just spin in the loop, because this can be more precise
@@ -88,26 +88,28 @@ void waitForNextFrame()
         currentTime = getCurrentTime();
     }
 
-    control.elapsedFrameTime = control.prevFrameTime ? currentTime - control.prevFrameTime : 0;
-    control.prevFrameTime = currentTime;
-    control.frameCount += 1;
+    frameControler.elapsedFrameTime = frameControler.prevFrameTime ? currentTime - frameControler.prevFrameTime : 0;
+    frameControler.prevFrameTime = currentTime;
+    frameControler.frameCount += 1;
 }
 
-double getElapsedFrameTime()
-{
-    const double elapsed = timeToMs(control.elapsedFrameTime);
-    if (control.maxDeltaTime > 0 && elapsed > control.maxDeltaTime) {
-        return control.maxDeltaTime;
-    }
-    return elapsed;
-}
+
 
 double getElapsedTime()
 {
-    return timeToMs(getCurrentTime() - control.startTime);
+    return timeToMs(getCurrentTime() - frameControler.startTime);
 }
 
 double getCurrentFps()
 {
-    return control.frameCount / (timeToMs(control.prevFrameTime - control.startTime) / 1000.0);
+    return frameControler.frameCount / (timeToMs(frameControler.prevFrameTime - frameControler.startTime) / 1000.0);
+}
+
+double getElapsedFrameTime()
+{
+    const double elapsedTime = timeToMs(frameControler.elapsedFrameTime);
+    if (frameControler.maxDeltaTime > 0 && elapsedTime > frameControler.maxDeltaTime) {
+        return frameControler.maxDeltaTime;
+    }
+    return elapsedTime;
 }
