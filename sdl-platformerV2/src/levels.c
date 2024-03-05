@@ -1,6 +1,6 @@
 #include "levels.h"
 #include "render.h"
-#include "game.h"s
+#include "game.h"
 #include "helpers.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>

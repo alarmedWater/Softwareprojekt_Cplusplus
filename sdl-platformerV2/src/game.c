@@ -718,7 +718,7 @@ void handleGameLoop()
 
     while (game.state != STATE_QUIT)
     {
-        pollGPIOAndPushEvents();
+        gpio_poll_and_push_events();
         processFrame();
         frame_control_wait_for_next_frame();
         
