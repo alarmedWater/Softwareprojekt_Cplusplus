@@ -97,7 +97,7 @@ Object* find_near_item(int r, int c) {
 Object* find_object(Level* level, ObjectTypeId type_id) {
     for (int i = 0; i < level->objects.count; ++i) {
         Object* object = level->objects.array[i];
-        if (object->type->type_id == type_id) {
+        if (object->type->typeId == type_id) {
             return object;
         }
     }

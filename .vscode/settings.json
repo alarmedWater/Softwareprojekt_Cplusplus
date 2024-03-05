@@ -4,6 +4,14 @@
         "game.h": "c",
         "time.h": "c",
         "render.h": "c",
-        "random": "c"
+        "random": "c",
+        "bit": "c",
+        "compare": "c",
+        "cstddef": "c",
+        "string": "c",
+        "limits": "c",
+        "memory": "c",
+        "new": "c",
+        "functional": "c"
     }
 }

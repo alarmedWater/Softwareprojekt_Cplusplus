@@ -362,7 +362,7 @@ static void processPlayer()
 
     int r, c;
     Borders cell, body;
-    object_get_postition((Object *)&player, &r, &c, &cell, &body);
+    object_get_position((Object *)&player, &r, &c, &cell, &body);
 
     player.vx = limit_absolute(player.vx, MAX_SPEED);
     player.vy = limit_absolute(player.vy, MAX_SPEED);
@@ -405,7 +405,7 @@ static void processPlayer()
         if (cell_is_solid(r + 1, c, SOLID_TOP) ||
             (sprite.left + hitw < cell.left && cell_is_solid(r + 1, c - 1, SOLID_TOP)) ||
             (sprite.right - hitw > cell.right && cell_is_solid(r + 1, c + 1, SOLID_TOP)) ||
-            (!player.onLadder && cell_is_solidLadder(r + 1, c)))
+            (!player.onLadder && cell_is_solid_Ladder(r + 1, c)))
         {
             player.y = cell.top;
             player.vy = 0;
