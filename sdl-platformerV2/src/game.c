@@ -14,10 +14,11 @@
 #include "helpers.h"
 #include "render.h"
 #include "levels.h"
+#include "gpio_control.h"
 
 #include <stdio.h>
 #include <math.h>
-#include "gpio_control.h"
+
 
 // ///{
 //     // Example GPIO read function, you need to implement it
