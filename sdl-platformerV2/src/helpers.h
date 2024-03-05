@@ -3,23 +3,23 @@
 
 #include "types.h"
 
-int isCellValid( int r, int c );
-int isSolid( int r, int c, int flags );
-int isLadder( int r, int c );
-int isSolidLadder( int r, int c );
-int isWater( int r, int c );
-int cellContains( int r, int c, ObjectTypeId generalType );
-int hitTest( Object* object1, Object* object2 );
+int cell_is_valid(int r, int c);
+int cell_is_solid(int r, int c, int flags);
+int cell_is_ladder(int r, int c);
+int cell_is_solid_ladder(int r, int c);
+int cell_is_water(int r, int c);
+int cell_contains(int r, int c, ObjectTypeId general_type);
+int objects_hit_test(Object* object1, Object* object2);
 
-void getObjectCell( Object* object, int* r, int* c );
-void getObjectBody( Object* object, Borders* body );
-void getObjectPos( Object* object, int* r, int* c, Borders* cell, Borders* body );
+void object_get_cell(Object* object, int* r, int* c);
+void object_get_body(Object* object, Borders* body);
+void object_get_position(Object* object, int* r, int* c, Borders* cell, Borders* body);
 
-int findNearDoor( int* r, int* c );
-Object* findNearItem( int r, int c );
-Object* findObject( Level* level, ObjectTypeId typeId );
+int find_near_door(int* r, int* c);
+Object* find_near_item(int r, int c);
+Object* find_object(Level* level, ObjectTypeId type_id);
 
-double limitAbs(double value, double max);
-void ensure(int condition, const char* message);
+double limit_absolute(double value, double max);
+void ensure_condition_condition(int condition, const char* message);
 
 #endif

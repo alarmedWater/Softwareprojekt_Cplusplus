@@ -129,7 +129,7 @@ typedef void (*OnHit)( Object* );
 typedef struct
 {
     ObjectTypeId typeId;
-    ObjectTypeId generalTypeId;
+    ObjectTypeId general_type_id;
     SDL_Rect sprite; // Sprite rect in the spritesheet, unscaled
     SDL_Rect body;   // Body rect relative to the object (x, y), unscaled
     int solid;

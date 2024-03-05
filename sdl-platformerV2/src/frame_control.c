@@ -35,7 +35,7 @@ static time_ns get_current_time() {
 void frame_control_start(int fps, double max_delta_time) {
     frame_controller.time_per_ms = 1000000;
     frame_controller.start_time = get_current_time();
-    ensure(frame_controller.start_time != TIME_UNDEFINED, "frame_control_start: Can't get current time");
+    ensure_condition(frame_controller.start_time != TIME_UNDEFINED, "frame_control_start: Can't get current time");
     frame_controller.prev_frame_time = frame_controller.start_time;
     frame_controller.elapsed_frame_time = 0;
     frame_controller.frame_period = fps > 0 ? ms_to_time(1000.0 / fps) : 0;
@@ -48,7 +48,7 @@ void frame_control_stop() {
     if (!frame_controller.started) {
         return;
     }
-    frame_controller.started = 0; // Ensure to mark the controller as stopped.
+    frame_controller.started = 0; // ensure_condition to mark the controller as stopped.
 }
 
 void frame_control_wait_for_next_frame() {

@@ -36,7 +36,7 @@ void initializeRender( const char* spritesPath, const char* fontPath )
     // Sprites
     static const Uint8 transparent[3] = {90, 82, 104};
     SDL_Surface* surface = SDL_LoadBMP(spritesPath);
-    ensure(surface != NULL,  "initializeRender(): Can't load sprite sheet");
+    ensure_condition(surface != NULL,  "initializeRender(): Can't load sprite sheet");
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, transparent[0], transparent[1], transparent[2]));
     sprites = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
@@ -44,7 +44,7 @@ void initializeRender( const char* spritesPath, const char* fontPath )
     // Font
     TTF_Init();
     font = TTF_OpenFont(fontPath, TEXT_FONT_SIZE);
-    ensure(font != NULL, "initRender(): Can't open font");
+    ensure_condition(font != NULL, "initRender(): Can't open font");
 
     // Messages
     initializeMessage(MESSAGE_PLAYER_KILLED,  "You lost a life");

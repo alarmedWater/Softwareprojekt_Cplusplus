@@ -23,59 +23,59 @@ typedef enum
 
 typedef enum
 {
-    HITTEST_NONE = 0,
-    HITTEST_WALLS = 1,
-    HITTEST_FLOOR = 2,
-    HITTEST_LEVEL = 4,
-    HITTEST_ALL = HITTEST_WALLS | HITTEST_FLOOR | HITTEST_LEVEL
-} HitTest;
+    objects_hit_test_NONE = 0,
+    objects_hit_test_WALLS = 1,
+    objects_hit_test_FLOOR = 2,
+    objects_hit_test_LEVEL = 4,
+    objects_hit_test_ALL = objects_hit_test_WALLS | objects_hit_test_FLOOR | objects_hit_test_LEVEL
+} objects_hit_test;
 
 // Moves the object and checks the walls, floor and level borders according
-// to hitTest flags. Returns 0 on success, otherwise returns the directions
+// to objects_hit_test flags. Returns 0 on success, otherwise returns the directions
 // which the object could not fully move to.
-static int move( Object* object, int hitTest )
+static int move( Object* object, int objects_hit_test )
 {
     const double dt = frame_control_get_elapsed_frame_time() / 1000.0;
-    const double dx = limitAbs(object->vx, MAX_SPEED) * dt;
-    const double dy = limitAbs(object->vy, MAX_SPEED) * dt;
+    const double dx = limit_absolute(object->vx, MAX_SPEED) * dt;
+    const double dy = limit_absolute(object->vy, MAX_SPEED) * dt;
 
-    const int check_walls = hitTest & HITTEST_WALLS;
-    const int check_floor = hitTest & HITTEST_FLOOR;
-    const int check_level = hitTest & HITTEST_LEVEL;
+    const int check_walls = objects_hit_test & objects_hit_test_WALLS;
+    const int check_floor = objects_hit_test & objects_hit_test_FLOOR;
+    const int check_level = objects_hit_test & objects_hit_test_LEVEL;
 
     const SDL_Rect bodyRect = object->type->body;
 
     int result = 0;
     int r, c; Borders cell, body;
-    getObjectPos(object, &r, &c, &cell, &body);
+    object_get_postition(object, &r, &c, &cell, &body);
 
     object->x += dx;
     object->y += dy;
-    getObjectBody(object, &body);
+    object_get_body(object, &body);
 
     if (dx > 0 && body.right > cell.right) {
-        if ((check_walls && isSolid(r, c + 1, SOLID_LEFT)) ||
+        if ((check_walls && cell_is_solid(r, c + 1, SOLID_LEFT)) ||
             (check_level && body.right > LEVEL_WIDTH) || 
-            (check_floor && !isSolid(r + 1, c + 1, SOLID_TOP) && !isLadder(r + 1, c + 1))) {
+            (check_floor && !cell_is_solid(r + 1, c + 1, SOLID_TOP) && !cell_is_solid_ladder(r + 1, c + 1))) {
             object->x = cell.right - (bodyRect.x + bodyRect.w);
             result |= DIRECTION_X;
         }
     } else if (dx < 0 && body.left < cell.left) {
-        if ((check_walls && isSolid(r, c - 1, SOLID_RIGHT)) ||
+        if ((check_walls && cell_is_solid(r, c - 1, SOLID_RIGHT)) ||
             (check_level && body.left < 0) ||
-            (check_floor && !isSolid(r + 1, c - 1, SOLID_TOP) && !isLadder(r + 1, c - 1))) {
+            (check_floor && !cell_is_solid(r + 1, c - 1, SOLID_TOP) && !cell_is_solid_ladder(r + 1, c - 1))) {
             object->x = cell.left - bodyRect.x;
             result |= DIRECTION_X;
         }
     }
     if (dy > 0 && body.bottom > cell.bottom) {
-        if ((check_walls && isSolid(r + 1, c, SOLID_TOP)) ||
+        if ((check_walls && cell_is_solid(r + 1, c, SOLID_TOP)) ||
             (check_level && body.bottom > LEVEL_HEIGHT)) {
             object->y = cell.bottom - (bodyRect.y + bodyRect.h);
             result |= DIRECTION_Y;
         }
     } else if (dy < 0 && body.top < cell.top) {
-        if ((check_walls && isSolid(r - 1, c, SOLID_BOTTOM)) ||
+        if ((check_walls && cell_is_solid(r - 1, c, SOLID_BOTTOM)) ||
             (check_level && body.top < 0)) {
             object->y = cell.top - bodyRect.y;
             result |= DIRECTION_Y;
@@ -116,7 +116,7 @@ static int isVisible( Object* source, Object* target )
         const int r = (source->y + CELL_HALF) / CELL_SIZE;
         for (x1 = x1 + CELL_HALF; x1 < x2; x1 += CELL_SIZE) {
             const int c = x1 / CELL_SIZE;
-            if (isSolid(r, c, SOLID_LEFT | SOLID_RIGHT)) {
+            if (cell_is_solid(r, c, SOLID_LEFT | SOLID_RIGHT)) {
                 return 0;
             }
         }
@@ -164,7 +164,7 @@ void MovingEnemy_onInit( Object* e )
 void MovingEnemy_onFrame( Object* e )
 {
     if (e->state <= ENEMY_MOVING) {
-        if (move(e, HITTEST_ALL)) {
+        if (move(e, objects_hit_test_ALL)) {
             setSpeed(e, -e->vx, e->vy);
         }
         setAnimation(e, 1, 2, speedToFps(e->vx));
@@ -210,7 +210,7 @@ void ShootingEnemy_onFrame( Object* e )
             shot->y = e->y;
             setSpeed(shot, shot->vx * (e->vx > 0 ? 1 : -1), shot->vy);
             e->state = SHOOTINGENEMY_MOVING + 1;
-        } else if (move(e, HITTEST_ALL)) {
+        } else if (move(e, objects_hit_test_ALL)) {
             setSpeed(e, -e->vx, e->vy);
         }
         setAnimation(e, 1, 2, speedToFps(e->vx));
@@ -242,7 +242,7 @@ void Shot_onInit( Object* e )
 void Shot_onFrame( Object* e )
 {
     if (e->state <= SHOT_MOVING) {
-        if (move(e, HITTEST_WALLS | HITTEST_LEVEL)) {
+        if (move(e, objects_hit_test_WALLS | objects_hit_test_LEVEL)) {
             setAnimation(e, 3, 3, 0);
             e->state = SHOT_MOVING + 1;
         }
@@ -277,18 +277,18 @@ void Bat_onFrame( Object* e )
 {
     int r, c; Borders cell, body;
     if (e->state == 0) {
-        getObjectPos(e, &r, &c, &cell, &body);
+        object_get_postition(e, &r, &c, &cell, &body);
         e->state = cell.top + BAT_FLY_HEIGHT;
     }
 
-    const int m = move(e, HITTEST_WALLS | HITTEST_LEVEL);
+    const int m = move(e, objects_hit_test_WALLS | objects_hit_test_LEVEL);
     if (m & DIRECTION_X) {
         setSpeed(e, -e->vx, e->vy);
     }
     if (m & DIRECTION_Y) {
         setSpeed(e, e->vx, -e->vy);
     } else {
-        getObjectPos(e, &r, &c, &cell, &body);
+        object_get_postition(e, &r, &c, &cell, &body);
         if (body.bottom >= e->state || body.top <= e->state - BAT_FLY_HEIGHT) {
             setSpeed(e, e->vx, -e->vy);
         }
@@ -308,15 +308,15 @@ static const double ITEM_FADE_SPEED = 0.25; // Seconds
 void Item_onHit( Object* item )
 {
     if (item->state <= ITEM_IDLE) {
-        ObjectTypeId generalTypeId = item->type->generalTypeId;
+        ObjectTypeId general_type_id = item->type->general_type_id;
 
-        if (generalTypeId == TYPE_COIN) {
+        if (general_type_id == TYPE_COIN) {
             player.coins += 1;
-        } else if (generalTypeId == TYPE_KEY) {
+        } else if (general_type_id == TYPE_KEY) {
             player.keys += 1;
-        } else if (generalTypeId == TYPE_HEART) {
+        } else if (general_type_id == TYPE_HEART) {
             player.lives += 1;
-        } else if (generalTypeId == TYPE_STATUARY) {
+        } else if (general_type_id == TYPE_STATUARY) {
             completeLevel();
         } else {
             // Add the item to player.items, for example
@@ -341,7 +341,7 @@ void Item_onFrame( Object* item )
             item->state = ITEM_TAKEN + 1;
         }
         setSpeed(item, item->vx, item->vy - item->vy * dt / ITEM_FADE_SPEED);
-        move(item, HITTEST_NONE);
+        move(item, objects_hit_test_NONE);
 
     } else {
         item->removed = 1;
@@ -381,7 +381,7 @@ void Fireball_onFrame( Object* e )
         e->state = FIREBALL_MOVING;
     }
 
-    const int m = move(e, HITTEST_WALLS | HITTEST_LEVEL);
+    const int m = move(e, objects_hit_test_WALLS | objects_hit_test_LEVEL);
     if (m) {
         setSpeed(e, m & DIRECTION_X ? -e->vx : e->vx, m & DIRECTION_Y ? -e->vy : e->vy);
     }
@@ -432,8 +432,8 @@ void Drop_onFrame( Object* e )
         if (e->vy < 120) {
             e->vy += 48 * frame_control_get_elapsed_frame_time() / 1000.0;
         }
-        if (move(e, HITTEST_WALLS | HITTEST_LEVEL)) {
-            move(e, HITTEST_NONE);
+        if (move(e, objects_hit_test_WALLS | objects_hit_test_LEVEL)) {
+            move(e, objects_hit_test_NONE);
             e->state = DROP_FALLING + 1;
         }
 
@@ -481,7 +481,7 @@ static const int TELEPORTINGENEMY_AFTER_TELEPORT = 9000;
 void TeleportingEnemy_onFrame( Object* e )
 {
     if (e->state <= TELEPORTINGENEMY_MOVING) {
-        if (move(e, HITTEST_ALL)) {
+        if (move(e, objects_hit_test_ALL)) {
             setSpeed(e, -e->vx, e->vy);
         }
         setAnimation(e, 1, 2, speedToFps(e->vx));
@@ -501,9 +501,9 @@ void TeleportingEnemy_onFrame( Object* e )
             if (r == currentRow) {
                 continue;
             }
-            const int canStand     = !isSolid(r, c,     SOLID_ALL)   && isSolid(r + 1, c,     SOLID_TOP);
-            const int canMoveLeft  = !isSolid(r, c - 1, SOLID_RIGHT) && isSolid(r + 1, c - 1, SOLID_TOP);
-            const int canMoveRight = !isSolid(r, c + 1, SOLID_LEFT)  && isSolid(r + 1, c + 1, SOLID_TOP);
+            const int canStand     = !cell_is_solid(r, c,     SOLID_ALL)   && cell_is_solid(r + 1, c,     SOLID_TOP);
+            const int canMoveLeft  = !cell_is_solid(r, c - 1, SOLID_RIGHT) && cell_is_solid(r + 1, c - 1, SOLID_TOP);
+            const int canMoveRight = !cell_is_solid(r, c + 1, SOLID_LEFT)  && cell_is_solid(r + 1, c + 1, SOLID_TOP);
             if (canStand && (canMoveLeft || canMoveRight)) {
                 e->y = CELL_SIZE * r;
                 e->x = CELL_SIZE * c;
@@ -542,7 +542,7 @@ void Platform_onInit( Object* e )
 
 void Platform_onFrame( Object* e )
 {
-    if (move(e, HITTEST_WALLS | HITTEST_LEVEL)) {
+    if (move(e, objects_hit_test_WALLS | objects_hit_test_LEVEL)) {
         e->vx = -e->vx;
         e->vy = -e->vy;
     }
@@ -556,8 +556,8 @@ void Platform_onHit( Object* e )
     const double border = 3;
 
     Borders pb, eb;
-    getObjectBody((Object*)&player, &pb);
-    getObjectBody(e, &eb);
+    object_get_body((Object*)&player, &pb);
+    object_get_body(e, &eb);
 
     const int hitX = pb.right >= (eb.left + border) && pb.left <= (eb.right - border);
     const int hitY = pb.bottom >= (eb.top + border) && pb.top <= (eb.bottom - border);
@@ -635,10 +635,10 @@ void Water_onInit( Object* e )
 void Water_onHit( Object* e )
 {
     int er, ec;
-    getObjectCell(e, &er, &ec);
+    object_get_cell(e, &er, &ec);
 
     int pr, pc;
-    getObjectCell((Object*)&player, &pr, &pc);
+    object_get_cell((Object*)&player, &pr, &pc);
 
     if (er == pr) {
         killPlayer();

@@ -159,8 +159,8 @@ void movePlayerRight()
 void movePlayerUp()
 {
     int r, c;
-    getObjectCell((Object *)&player, &r, &c);
-    if (!isLadder(r, c))
+    object_get_cell((Object *)&player, &r, &c);
+    if (!cell_is_solid_ladder(r, c))
     {
         player.onLadder = 0;
         if (!player.inAir && !game.jumpDenied)
@@ -181,8 +181,8 @@ void movePlayerUp()
 void movePlayerDown()
 {
     int r, c;
-    getObjectCell((Object *)&player, &r, &c);
-    if (isLadder(r + 1, c) || player.onLadder)
+    object_get_cell((Object *)&player, &r, &c);
+    if (cell_is_solid_ladder(r + 1, c) || player.onLadder)
     {
         if (!player.onLadder)
         {
@@ -198,8 +198,8 @@ void movePlayerDown()
 void playerInteract()
 {
     int r, c;
-    getObjectCell((Object *)&player, &r, &c);
-    if (findNearDoor(&r, &c))
+    object_get_cell((Object *)&player, &r, &c);
+    if (find_near_door(&r, &c))
     {
         if (player.keys > 0)
         {
@@ -299,8 +299,8 @@ static void processInput()
     // ... Up
     if (game.keystate[SDL_SCANCODE_UP]) {
         int r, c;
-        getObjectCell((Object*)&player, &r, &c);
-        if (!isLadder(r, c)) {
+        object_get_cell((Object*)&player, &r, &c);
+        if (!cell_is_solid_ladder(r, c)) {
             player.onLadder = 0;
             // jumpDenied prevents jump when player reaches the top of the ladder
             // by holding UP key, until this key is released
@@ -318,8 +318,8 @@ static void processInput()
     // ... Down
     } else if (game.keystate[SDL_SCANCODE_DOWN]) {
         int r, c;
-        getObjectCell((Object*)&player, &r, &c);
-        if (isLadder(r + 1, c) || player.onLadder) {
+        object_get_cell((Object*)&player, &r, &c);
+        if (cell_is_solid_ladder(r + 1, c) || player.onLadder) {
             if (!player.onLadder) {
                 player.onLadder = 1;
                 player.y = r * CELL_SIZE + CELL_HALF + 1;
@@ -342,8 +342,8 @@ static void processInput()
     // ... Space
     if (game.keystate[SDL_SCANCODE_SPACE]) {
         int r, c;
-        getObjectCell((Object*)&player, &r, &c);
-        if (findNearDoor(&r, &c)) {
+        object_get_cell((Object*)&player, &r, &c);
+        if (find_near_door(&r, &c)) {
             if (player.keys > 0) {
                 player.keys -= 1;
                 level->cells[r][c] = &objectTypes[TYPE_NONE];
@@ -362,10 +362,10 @@ static void processPlayer()
 
     int r, c;
     Borders cell, body;
-    getObjectPos((Object *)&player, &r, &c, &cell, &body);
+    object_get_postition((Object *)&player, &r, &c, &cell, &body);
 
-    player.vx = limitAbs(player.vx, MAX_SPEED);
-    player.vy = limitAbs(player.vy, MAX_SPEED);
+    player.vx = limit_absolute(player.vx, MAX_SPEED);
+    player.vy = limit_absolute(player.vy, MAX_SPEED);
 
     // ... X
     player.x += player.vx * dt;
@@ -375,9 +375,9 @@ static void processPlayer()
     if (sprite.left < cell.left && player.vx <= 0)
     {
      
-        if (isSolid(r, c - 1, SOLID_RIGHT) ||
-            (sprite.top + hith < cell.top && isSolid(r - 1, c - 1, SOLID_RIGHT)) ||
-            (sprite.bottom - hith > cell.bottom && isSolid(r + 1, c - 1, SOLID_RIGHT)))
+        if (cell_is_solid(r, c - 1, SOLID_RIGHT) ||
+            (sprite.top + hith < cell.top && cell_is_solid(r - 1, c - 1, SOLID_RIGHT)) ||
+            (sprite.bottom - hith > cell.bottom && cell_is_solid(r + 1, c - 1, SOLID_RIGHT)))
         {
             player.x = cell.left;
             player.vx = 0;
@@ -386,9 +386,9 @@ static void processPlayer()
     }
     else if (sprite.right > cell.right && player.vx >= 0)
     {
-        if (isSolid(r, c + 1, SOLID_LEFT) ||
-            (sprite.top + hith < cell.top && isSolid(r - 1, c + 1, SOLID_LEFT)) ||
-            (sprite.bottom - hith > cell.bottom && isSolid(r + 1, c + 1, SOLID_LEFT)))
+        if (cell_is_solid(r, c + 1, SOLID_LEFT) ||
+            (sprite.top + hith < cell.top && cell_is_solid(r - 1, c + 1, SOLID_LEFT)) ||
+            (sprite.bottom - hith > cell.bottom && cell_is_solid(r + 1, c + 1, SOLID_LEFT)))
         {
             player.x = cell.left;
             player.vx = 0;
@@ -402,10 +402,10 @@ static void processPlayer()
     // ... Bottom
     if (sprite.bottom > cell.bottom && player.vy >= 0)
     {
-        if (isSolid(r + 1, c, SOLID_TOP) ||
-            (sprite.left + hitw < cell.left && isSolid(r + 1, c - 1, SOLID_TOP)) ||
-            (sprite.right - hitw > cell.right && isSolid(r + 1, c + 1, SOLID_TOP)) ||
-            (!player.onLadder && isSolidLadder(r + 1, c)))
+        if (cell_is_solid(r + 1, c, SOLID_TOP) ||
+            (sprite.left + hitw < cell.left && cell_is_solid(r + 1, c - 1, SOLID_TOP)) ||
+            (sprite.right - hitw > cell.right && cell_is_solid(r + 1, c + 1, SOLID_TOP)) ||
+            (!player.onLadder && cell_is_solidLadder(r + 1, c)))
         {
             player.y = cell.top;
             player.vy = 0;
@@ -424,9 +424,9 @@ static void processPlayer()
     }
     else if (sprite.top < cell.top && player.vy <= 0)
     {
-        if (isSolid(r - 1, c, SOLID_BOTTOM) ||
-            (sprite.left + hitw < cell.left && isSolid(r - 1, c - 1, SOLID_BOTTOM)) ||
-            (sprite.right - hitw > cell.right && isSolid(r - 1, c + 1, SOLID_BOTTOM)))
+        if (cell_is_solid(r - 1, c, SOLID_BOTTOM) ||
+            (sprite.left + hitw < cell.left && cell_is_solid(r - 1, c - 1, SOLID_BOTTOM)) ||
+            (sprite.right - hitw > cell.right && cell_is_solid(r - 1, c + 1, SOLID_BOTTOM)))
         {
             player.y = cell.top;
             player.vy += 1;
@@ -435,7 +435,7 @@ static void processPlayer()
     }
 
     // Screen borders
-    getObjectCell((Object *)&player, &r, &c);
+    object_get_cell((Object *)&player, &r, &c);
 
     const int lc = level->c;
     const int lr = level->r;
@@ -518,7 +518,7 @@ static void processPlayer()
     }
 
     // Environment and others
-    getObjectCell((Object *)&player, &r, &c);
+    object_get_cell((Object *)&player, &r, &c);
 
     // ... Gravity
     if (!player.onLadder)
@@ -531,7 +531,7 @@ static void processPlayer()
     }
 
     // ... Ladder
-    if (player.onLadder && !isLadder(r, c))
+    if (player.onLadder && !cell_is_solid_ladder(r, c))
     {
         player.onLadder = 0;
         setAnimation((Object *)&player, 0, 0, 0);
@@ -543,7 +543,7 @@ static void processPlayer()
     }
 
     // ... Water
-    if (isWater(r, c))
+    if (cell_is_water(r, c))
     {
         killPlayer();
     }
@@ -577,7 +577,7 @@ static void processObjects()
             continue;
         }
         object->type->onFrame(object);
-        if (hitTest(object, (Object *)&player))
+        if (objects_hit_test(object, (Object *)&player))
         {
             object->type->onHit(object);
         }

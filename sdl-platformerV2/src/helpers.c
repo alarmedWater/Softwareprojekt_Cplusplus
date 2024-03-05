@@ -1,49 +1,35 @@
-/**
- * @file levels.c
- * @brief Utility functions for level and cell manipulation in the SDL Platformer game.
- *
- * This file contains functions to check and manipulate game level cells, including validation,
- * collision detection, and interaction with game objects like ladders, water, doors, and items.
- */
 #include "helpers.h"
 #include "game.h"
 #include "levels.h"
+#include <math.h>
+#include <stdlib.h>
 
-
-int isCellValid( int r, int c )
-{
+int cell_is_valid(int r, int c) {
     return r >= 0 && r < ROW_COUNT && c >= 0 && c < COLUMN_COUNT;
 }
 
-int isSolid( int r, int c, int flags )
-{
-    return isCellValid(r, c) ? (level->cells[r][c]->solid & flags) == flags : 0;
+int cell_is_solid(int r, int c, int flags) {
+    return cell_is_valid(r, c) ? (level->cells[r][c]->solid & flags) == flags : 0;
 }
 
-int isLadder( int r, int c )
-{
-    return isCellValid(r, c) ? level->cells[r][c]->generalTypeId == TYPE_LADDER : 0;
+int cell_is_ladder(int r, int c) {
+    return cell_is_valid(r, c) ? level->cells[r][c]->general_type_id == TYPE_LADDER : 0;
 }
 
-// Returns 1 if there is a ladder at (r, c) and player can stay on it
-int isSolidLadder( int r, int c )
-{
-    return isLadder(r, c) && (isSolid(r, c - 1, SOLID_TOP) || isSolid(r, c + 1, SOLID_TOP) ||
-           !isLadder(r - 1, c));
+int cell_is_solid_ladder(int r, int c) {
+    return cell_is_ladder(r, c) && (cell_is_solid(r, c - 1, SOLID_TOP) || cell_is_solid(r, c + 1, SOLID_TOP) ||
+           !cell_is_ladder(r - 1, c));
 }
 
-int isWater( int r, int c )
-{
-    return isCellValid(r, c) ? level->cells[r][c]->generalTypeId == TYPE_WATER : 0;
+int cell_is_water(int r, int c) {
+    return cell_is_valid(r, c) ? level->cells[r][c]->general_type_id == TYPE_WATER : 0;
 }
 
-int cellContains( int r, int c, ObjectTypeId generalType )
-{
-    return isCellValid(r, c) ? level->cells[r][c]->generalTypeId == generalType : 0;
+int cell_contains(int r, int c, ObjectTypeId general_type) {
+    return cell_is_valid(r, c) ? level->cells[r][c]->general_type_id == general_type : 0;
 }
 
-int hitTest( Object* object1, Object* object2 )
-{
+int objects_hit_test(Object* object1, Object* object2) {
     const SDL_Rect o1 = object1->type->body;
     const SDL_Rect o2 = object2->type->body;
     if (fabs((object1->x + o1.x + o1.w / 2.0) - (object2->x + o2.x + o2.w / 2.0)) < (o1.w + o2.w) / 2.0 &&
@@ -53,26 +39,23 @@ int hitTest( Object* object1, Object* object2 )
     return 0;
 }
 
-void getObjectCell( Object* object, int* r, int* c )
-{
+void object_get_cell(Object* object, int* r, int* c) {
     const SDL_Rect body = object->type->body;
     *r = (object->y + body.y + body.h / 2.0) / CELL_SIZE;
     *c = (object->x + body.x + body.w / 2.0) / CELL_SIZE;
 }
 
-void getObjectBody( Object* object, Borders* borders )
-{
-    const SDL_Rect body = object->type->body;
-    borders->left = object->x + body.x;
-    borders->right = borders->left + body.w;
-    borders->top = object->y + body.y;
-    borders->bottom = borders->top + body.h;
+void object_get_body(Object* object, Borders* body) {
+    const SDL_Rect body_rect = object->type->body;
+    body->left = object->x + body_rect.x;
+    body->right = body->left + body_rect.w;
+    body->top = object->y + body_rect.y;
+    body->bottom = body->top + body_rect.h;
 }
 
-void getObjectPos( Object* object, int* r, int* c, Borders* cell, Borders* body )
-{
-    getObjectCell(object, r, c);
-    getObjectBody(object, body);
+void object_get_position(Object* object, int* r, int* c, Borders* cell, Borders* body) {
+    object_get_cell(object, r, c);
+    object_get_body(object, body);
 
     cell->left = CELL_SIZE * (*c);
     cell->right = cell->left + CELL_SIZE;
@@ -80,32 +63,30 @@ void getObjectPos( Object* object, int* r, int* c, Borders* cell, Borders* body 
     cell->bottom = cell->top + CELL_SIZE;
 }
 
-int findNearDoor( int* r, int* c )
-{
+int find_near_door(int* r, int* c) {
     const int r0 = *r;
     const int c0 = *c;
-    if (cellContains(r0, c0, TYPE_DOOR)) {
+    if (cell_contains(r0, c0, TYPE_DOOR)) {
         return 1;
     }
-    if (cellContains(r0, c0 - 1, TYPE_DOOR)) {
+    if (cell_contains(r0, c0 - 1, TYPE_DOOR)) {
         *c = c0 - 1;
         return 1;
     }
-    if (cellContains(r0, c0 + 1, TYPE_DOOR)) {
+    if (cell_contains(r0, c0 + 1, TYPE_DOOR)) {
         *c = c0 + 1;
         return 1;
     }
     return 0;
 }
 
-Object* findNearItem( int r, int c )
-{
-    for (int i = level->objects.count - 1; i >= 0; -- i) {
+Object* find_near_item(int r, int c) {
+    for (int i = level->objects.count - 1; i >= 0; --i) {
         Object* object = level->objects.array[i];
-        if (object->type->generalTypeId == TYPE_ITEM && !object->removed) {
-            int or, oc;
-            getObjectCell(object, &or, &oc);
-            if (or == r && oc == c) {
+        if (object->type->general_type_id == TYPE_ITEM && !object->removed) {
+            int obj_r, obj_c;
+            object_get_cell(object, &obj_r, &obj_c);
+            if (obj_r == r && obj_c == c) {
                 return object;
             }
         }
@@ -113,26 +94,21 @@ Object* findNearItem( int r, int c )
     return NULL;
 }
 
-Object* findObject( Level* level, ObjectTypeId typeId )
-{
-    for (int i = 0; i < level->objects.count; ++ i) {
+Object* find_object(Level* level, ObjectTypeId type_id) {
+    for (int i = 0; i < level->objects.count; ++i) {
         Object* object = level->objects.array[i];
-        if (object->type->typeId == typeId) {
+        if (object->type->type_id == type_id) {
             return object;
         }
     }
     return NULL;
 }
 
-double limitAbs(double value, double max)
-{
-    return value >  max ?  max :
-           value < -max ? -max :
-           value;
+double limit_absolute(double value, double max) {
+    return value > max ? max : value < -max ? -max : value;
 }
 
-void ensure(int condition, const char* message)
-{
+void ensure_condition(int condition, const char* message) {
     if (!condition) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message, NULL);
         exit(EXIT_FAILURE);

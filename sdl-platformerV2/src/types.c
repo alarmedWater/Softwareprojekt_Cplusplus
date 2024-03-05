@@ -127,13 +127,13 @@ void initializeLevel( Level* level )
 
 // Types
 
-static void initializeTypeEx( ObjectTypeId typeId, ObjectTypeId generalTypeId, int solid,
+static void initializeTypeEx( ObjectTypeId typeId, ObjectTypeId general_type_id, int solid,
                         int spriteRow, int spriteColumn, int spriteWidth, int spriteHeight,
                         SDL_Rect body, double speed, OnInit onInit, OnFrame onFrame, OnHit onHit )
 {
     ObjectType* type = &objectTypes[typeId];
     type->typeId = typeId;
-    type->generalTypeId = generalTypeId;
+    type->general_type_id = general_type_id;
     type->sprite.y = spriteRow * SPRITE_SIZE;
     type->sprite.x = spriteColumn * SPRITE_SIZE;
     type->sprite.w = spriteWidth;
@@ -146,9 +146,9 @@ static void initializeTypeEx( ObjectTypeId typeId, ObjectTypeId generalTypeId, i
     type->onHit = onHit;
 }
 
-static void initializeType( ObjectTypeId typeId, ObjectTypeId generalTypeId, int solid, int spriteRow, int spriteColumn )
+static void initializeType( ObjectTypeId typeId, ObjectTypeId general_type_id, int solid, int spriteRow, int spriteColumn )
 {
-    initializeTypeEx(typeId, generalTypeId, solid, spriteRow, spriteColumn, SPRITE_SIZE, SPRITE_SIZE,
+    initializeTypeEx(typeId, general_type_id, solid, spriteRow, spriteColumn, SPRITE_SIZE, SPRITE_SIZE,
                (SDL_Rect){0, 0, 16, 16}, 0, Object_onInit, Object_onFrame, Object_onHit);
 }
 

@@ -3,6 +3,7 @@
         "levels.h": "c",
         "game.h": "c",
         "time.h": "c",
-        "render.h": "c"
+        "render.h": "c",
+        "random": "c"
     }
 }
