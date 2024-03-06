@@ -24,6 +24,7 @@ int cell_is_ladder(int r, int c) {
     
     // Print intermediate values
     printf("_____________is ladder____________\n");
+    printf("Checking cell [%d][%d]: general_type_id = %d, TYPE_LADDER = %d\n", r, c, level->cells[r][c]->general_type_id, TYPE_LADDER);
     printf("isValid: %d, ladderCheck: %d, Result for cell_is_ladder(%d, %d) = %d\n", isValid, ladderCheck, r, c, result);
     
     return result;
@@ -36,6 +37,7 @@ int cell_is_solid_ladder(int r, int c) {
     int ladderAbove = !cell_is_ladder(r - 1, c);
     printf("_____________is solid ladder____________\n");
     // Print intermediate values
+    printf("Checking cell [%d][%d]: general_type_id = %d, TYPE_LADDER = %d\n", r, c, level->cells[r][c]->general_type_id, TYPE_LADDER);
     printf("isLadder: %d, solidAbove: %d, solidBelow: %d, ladderAbove: %d\n", isLadder, solidAbove, solidBelow, ladderAbove);
     
     int result = isLadder && (solidAbove || solidBelow || ladderAbove);
