@@ -4,11 +4,11 @@
 #include <wiringPi.h>
 #include <SDL2/SDL.h>
 
-// GPIO Pin Definitions
-#define BUTTON_PIN_LEFT 25
-#define BUTTON_PIN_RIGHT 24
-#define BUTTON_PIN_UP 23
-#define BUTTON_PIN_DOWN 22
+// Define your GPIO pin numbers here
+#define BUTTON_PIN_LEFT 6  // WiringPi pin number for left button
+#define BUTTON_PIN_RIGHT 24 // WiringPi pin number for right button
+#define BUTTON_PIN_UP 25    // WiringPi pin number for up button
+#define BUTTON_PIN_DOWN 23  // WiringPi pin number for down button
 #define BUTTON_PIN_SPACE 21
 
 // SDL Custom Event Definitions
