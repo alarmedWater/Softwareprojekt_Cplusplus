@@ -11,7 +11,7 @@ int cell_is_valid(int r, int c) {
 int cell_is_solid(int r, int c, int flags) {
     int result = cell_is_valid(r, c) ? (level->cells[r][c]->solid & flags) == flags : 0;
     printf("cell_is_solid(%d, %d) = %d\n", r, c, result);
-    return 
+    return result;
     
 }
 
