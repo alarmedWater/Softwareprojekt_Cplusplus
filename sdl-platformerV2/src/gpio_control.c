@@ -55,13 +55,41 @@ int gpio_read_space_button(void) {
     return digitalRead(BUTTON_PIN_SPACE) == LOW; // Button is pressed when pin is LOW
 }
 
+
+
+// Last button states and the last time they were updated
+static int lastButtonState[5] = {HIGH, HIGH, HIGH, HIGH, HIGH};
+static long lastDebounceTime[5] = {0, 0, 0, 0, 0};
+
 void gpio_poll_and_push_events(void) {
-    // Example of directly pushing an event without debounce logic
-    SDL_Event event;
-    SDL_zero(event);
-    event.type = BUTTON_LEFT_PRESSED; // Simulate left button press
-    SDL_PushEvent(&event);
-    usleep(100000); // Prevent flooding the event queue
+    // Current time in milliseconds
+    long currentTime = get_current_time_millis();
+
+    // Array of button pins
+    int buttonPins[] = {BUTTON_PIN_LEFT, BUTTON_PIN_RIGHT, BUTTON_PIN_UP, BUTTON_PIN_DOWN, BUTTON_PIN_SPACE};
+
+    // Array of corresponding SDL custom event types
+    Uint32 events[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
+
+    for (int i = 0; i < sizeof(buttonPins) / sizeof(buttonPins[0]); ++i) {
+        int currentButtonState = digitalRead(buttonPins[i]);
+        
+        // Check if button state has changed and if the change is beyond the debounce time
+        if (currentButtonState != lastButtonState[i] && (currentTime - lastDebounceTime[i] > DEBOUNCE_TIME)) {
+            // Update the debounce timer
+            lastDebounceTime[i] = currentTime;
+
+            if (currentButtonState == LOW) { // Button is pressed when pin is LOW
+                SDL_Event event;
+                SDL_zero(event);
+                event.type = events[i];
+                SDL_PushEvent(&event); // Push the SDL custom event
+            }
+
+            // Update the last button state
+            lastButtonState[i] = currentButtonState;
+        }
+    }
 }
 
 

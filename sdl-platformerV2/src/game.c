@@ -231,7 +231,7 @@ void handleNoDirection()
     }
     player.vx = 0;
 }
-/*
+
 // Procces Input with buttons:
 static void processInput()
 {
@@ -273,9 +273,9 @@ static void processInput()
     // Additional logic for handling inputs not covered by SDL events goes here
     // For example, continuous movement or actions while a key/button is held down
 }
-*/
 
-//Procces Input with keyboard:
+
+/*//Procces Input with keyboard:
 static void processInput()
 {
     // ... Left
@@ -366,7 +366,7 @@ static void processInput()
         }
     }
 }
-
+*/
 
 static void processPlayer()
 {
@@ -633,26 +633,7 @@ static void processFrame()
             game.state = STATE_QUIT;
             break;
 
-        // Handle custom button press events for movement and interactions
-        case BUTTON_LEFT_PRESSED:
-           // printf("case BUTTON_LEFT_PRESSED\n");
-            movePlayerLeft();
-            break;
-        case BUTTON_RIGHT_PRESSED:
-            movePlayerRight();
-            break;
-        case BUTTON_UP_PRESSED: 
-            movePlayerUp();
-            break;
-        case BUTTON_DOWN_PRESSED: 
-            movePlayerDown();
-            break;
-        case BUTTON_SPACE_PRESSED: 
-            playerInteract();
-            break;
-
-            // Optionally, add cases for button release events to handle continuous movement or actions
-            // This would require tracking the state of each button (pressed or not)
+        
         }
     }
 

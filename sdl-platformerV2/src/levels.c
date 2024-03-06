@@ -364,8 +364,8 @@ void initializeLevels()
         fprintf(stderr, "Levels string is not initialized.\n");
         return;
     }
-    printf("Actual length: %zu\n", strlen(levelsString));
-    printf("Expected length: %d\n", LEVEL_COUNTY * LEVEL_COUNTX * ROW_COUNT * COLUMN_COUNT);
+    // printf("Actual length: %zu\n", strlen(levelsString));
+    // printf("Expected length: %d\n", LEVEL_COUNTY * LEVEL_COUNTX * ROW_COUNT * COLUMN_COUNT);
 
     ensure_condition(strlen(levelsString) == LEVEL_COUNTY * LEVEL_COUNTX * ROW_COUNT * COLUMN_COUNT,
            "The levels string does not match the levels count or size.");
