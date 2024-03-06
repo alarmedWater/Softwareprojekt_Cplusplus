@@ -240,28 +240,33 @@ static void processInput()
     {
         switch (event.type)
         {
-        case SDL_QUIT:
-            game.state = STATE_QUIT;
-            break;
-
-        // Custom events for button presses
+       
+         // Custom events for button presses
         case BUTTON_LEFT_PRESSED:
             movePlayerLeft();
+            printf("Event handled: BUTTON_LEFT_PRESSED\n");
             break;
         case BUTTON_RIGHT_PRESSED:
             movePlayerRight();
+            printf("Event handled: BUTTON_RIGHT_PRESSED\n");
             break;
         case BUTTON_UP_PRESSED: // Define and generate this event for GPIO button
             movePlayerUp();
+            printf("Event handled: BUTTON_UP_PRESSED\n");
             break;
         case BUTTON_DOWN_PRESSED: // Define and generate this event for GPIO button
             movePlayerDown();
+            printf("Event handled: BUTTON_DOWN_PRESSED\n");
             break;
         case BUTTON_SPACE_PRESSED: // Define and generate this event for GPIO button
             playerInteract();
+            printf("Event handled: BUTTON_SPACE_PRESSED\n");
             break;
 
-            // Add more custom event cases as necessary
+        // Default case for unhandled events
+        default:
+            printf("Unhandled event: %d\n", event.type);
+            break;
         }
     }
 
