@@ -405,7 +405,7 @@ static void processPlayer()
         if (cell_is_solid(r + 1, c, SOLID_TOP) ||
             (sprite.left + hitw < cell.left && cell_is_solid(r + 1, c - 1, SOLID_TOP)) ||
             (sprite.right - hitw > cell.right && cell_is_solid(r + 1, c + 1, SOLID_TOP)) ||
-            (!player.onLadder && cell_is_solid_Ladder(r + 1, c)))
+            (!player.onLadder && cell_is_solid_ladder(r + 1, c)))
         {
             player.y = cell.top;
             player.vy = 0;

@@ -20,6 +20,6 @@ Object* find_near_item(int r, int c);
 Object* find_object(Level* level, ObjectTypeId type_id);
 
 double limit_absolute(double value, double max);
-void ensure_condition_condition(int condition, const char* message);
+void ensure_condition(int condition, const char* message);
 
 #endif

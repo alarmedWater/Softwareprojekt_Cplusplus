@@ -28,7 +28,7 @@ typedef enum
     objects_hit_test_FLOOR = 2,
     objects_hit_test_LEVEL = 4,
     objects_hit_test_ALL = objects_hit_test_WALLS | objects_hit_test_FLOOR | objects_hit_test_LEVEL
-} objects_hit_test;
+} objects_hit;
 
 // Moves the object and checks the walls, floor and level borders according
 // to objects_hit_test flags. Returns 0 on success, otherwise returns the directions
@@ -47,7 +47,7 @@ static int move( Object* object, int objects_hit_test )
 
     int result = 0;
     int r, c; Borders cell, body;
-    object_get_postition(object, &r, &c, &cell, &body);
+    object_get_position(object, &r, &c, &cell, &body);
 
     object->x += dx;
     object->y += dy;

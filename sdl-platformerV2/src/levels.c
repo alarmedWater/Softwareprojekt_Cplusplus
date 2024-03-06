@@ -358,7 +358,7 @@ void initializeLevels()
         return; // Exit if loading fails
     }
 
-    // ensure_condition levelsString is correctly initialized before proceeding
+    // ensure levelsString is correctly initialized before proceeding
     if (levelsString == NULL)
     {
         fprintf(stderr, "Levels string is not initialized.\n");
@@ -369,6 +369,7 @@ void initializeLevels()
 
     ensure_condition(strlen(levelsString) == LEVEL_COUNTY * LEVEL_COUNTX * ROW_COUNT * COLUMN_COUNT,
            "The levels string does not match the levels count or size.");
+           
 
     initializeLevelsFromString(levelsString);
 
