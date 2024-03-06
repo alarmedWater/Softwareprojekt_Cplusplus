@@ -71,6 +71,9 @@ void gpio_poll_and_push_events(void) {
     // Array of corresponding SDL custom event types
     Uint32 events[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
 
+    // Array of button names for logging
+    char* buttonNames[] = {"Left", "Right", "Up", "Down", "Space"};
+
     for (int i = 0; i < sizeof(buttonPins) / sizeof(buttonPins[0]); ++i) {
         int currentButtonState = digitalRead(buttonPins[i]);
         
@@ -84,7 +87,9 @@ void gpio_poll_and_push_events(void) {
                 SDL_zero(event);
                 event.type = events[i];
                 SDL_PushEvent(&event); // Push the SDL custom event
-             printf("Button %s pressed, pushing event: %d\n", buttonNames[i], event.type);
+                
+                // Log to the console
+                printf("Button %s pressed, pushing event: %d\n", buttonNames[i], event.type);
             }
 
             // Update the last button state
@@ -92,6 +97,7 @@ void gpio_poll_and_push_events(void) {
         }
     }
 }
+
 
 
     // static int lastLeftState = 0, lastRightState = 0, lastUpState = 0, lastDownState = 0, lastSpaceState = 0;
