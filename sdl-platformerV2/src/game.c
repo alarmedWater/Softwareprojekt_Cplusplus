@@ -235,6 +235,7 @@ void handleNoDirection()
 // Procces Input with buttons:
 static void processInput()
 {
+    printf("Entering processInput function\n");
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
@@ -629,18 +630,18 @@ static void processFrame()
     SDL_RenderPresent(renderer);
 
     // Read all events
-    SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            game.state = STATE_QUIT;
-            break;
+    // SDL_Event event;
+    // while (SDL_PollEvent(&event))
+    // {
+    //     switch (event.type)
+    //     {
+    //     case SDL_QUIT:
+    //         game.state = STATE_QUIT;
+    //         break;
 
         
-        }
-    }
+    //     }
+    // }
 
     // Additional input processing logic can be placed here, if necessary
     // For example, handling continuous actions or updating game state based on input
