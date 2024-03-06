@@ -277,7 +277,7 @@ void Bat_onFrame( Object* e )
 {
     int r, c; Borders cell, body;
     if (e->state == 0) {
-        object_get_position(e, &r, &c, &cell, &body);
+        object_get_postition(e, &r, &c, &cell, &body);
         e->state = cell.top + BAT_FLY_HEIGHT;
     }
 
@@ -288,7 +288,7 @@ void Bat_onFrame( Object* e )
     if (m & DIRECTION_Y) {
         setSpeed(e, e->vx, -e->vy);
     } else {
-        object_get_position(e, &r, &c, &cell, &body);
+        object_get_postition(e, &r, &c, &cell, &body);
         if (body.bottom >= e->state || body.top <= e->state - BAT_FLY_HEIGHT) {
             setSpeed(e, e->vx, -e->vy);
         }

@@ -50,6 +50,16 @@ static struct
 Level *level = 0;
 Player player;
 
+
+//fast debug: 
+void printPlayerOnLadderStatus(const Player* player) {
+    if(player != NULL) {
+        printf("Player onLadder status: %d\n", player->onLadder);
+    } else {
+        printf("Invalid player reference.\n");
+    }
+}
+
 static const double PLAYER_SPEED_RUN = 72;       // Pixels per second
 static const double PLAYER_SPEED_LADDER = 48;    //
 static const double PLAYER_SPEED_JUMP = 216;     //
@@ -719,6 +729,7 @@ void handleGameLoop()
     while (game.state != STATE_QUIT)
     {
         gpio_poll_and_push_events();
+        printPlayerOnLadderStatus(player);
         processFrame();
         frame_control_wait_for_next_frame();
         
