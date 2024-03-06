@@ -59,6 +59,12 @@ void printPlayerOnLadderStatus(const Player* player) {
         printf("Invalid player reference.\n");
     }
 }
+void checkCollision(Player *player) {
+    objects_hit hitType = /* logic to determine hit type */;
+    printf("Checking collision with hit type: %d\n", hitType);
+    // Proceed with collision detection logic
+}
+
 
 static const double PLAYER_SPEED_RUN = 72;       // Pixels per second
 static const double PLAYER_SPEED_LADDER = 48;    //
@@ -726,6 +732,7 @@ void handleGameLoop()
     while (game.state != STATE_QUIT)
     {
         gpio_poll_and_push_events();
+        checkCollision(&player);
         processFrame();
         frame_control_wait_for_next_frame();
         
