@@ -65,7 +65,7 @@ static int lastButtonState[5] = {HIGH, HIGH, HIGH, HIGH, HIGH};
 static long lastDebounceTime[5] = {0, 0, 0, 0, 0};
 static long lastEventTime[5] = {0, 0, 0, 0, 0};
 
-vvoid gpio_poll_and_push_events(void) {
+void gpio_poll_and_push_events(void) {
     // Current time in milliseconds
     long currentTime = get_current_time_millis();
 
