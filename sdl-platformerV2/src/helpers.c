@@ -9,41 +9,39 @@ int cell_is_valid(int r, int c) {
 }
 
 int cell_is_solid(int r, int c, int flags) {
-    int isValid = cell_is_valid(r, c);
-    int cellSolidFlag = 0;
-    if (isValid) {
-        cellSolidFlag = (level->cells[r][c]->solid & flags) == flags;
-    }
-    int result = isValid ? cellSolidFlag : 0;
-
-    // Print the intermediate values and the result
-    printf("cell_is_valid(%d, %d) = %d\n", r, c, isValid);
-    printf("level->cells[%d][%d]->solid & flags == flags: %d\n", r, c, cellSolidFlag);
-    printf("cell_is_solid(%d, %d) = %d\n", r, c, result);
-
-    return result;
+    return cell_is_valid(r, c) ? (level->cells[r][c]->solid & flags) == flags : 0;
+    
 }
+
 
 int cell_is_ladder(int r, int c) {
     int isValid = cell_is_valid(r, c);
-    int cellIsLadderFlag = 0;
+    int ladderCheck = 0;
     if (isValid) {
-        cellIsLadderFlag = level->cells[r][c]->general_type_id == TYPE_LADDER;
+        ladderCheck = level->cells[r][c]->general_type_id == TYPE_LADDER;
     }
-    int result = isValid ? cellIsLadderFlag : 0;
-
-    // Print the intermediate values and the result
-    printf("cell_is_valid(%d, %d) = %d\n", r, c, isValid);
-    printf("level->cells[%d][%d]->general_type_id == TYPE_LADDER: %d\n", r, c, cellIsLadderFlag);
-    printf("cell_is_ladder(%d, %d) = %d\n", r, c, result);
-
+    int result = isValid ? ladderCheck : 0;
+    
+    // Print intermediate values
+    printf("_____________is ladder____________\n");
+    printf("isValid: %d, ladderCheck: %d, Result for cell_is_ladder(%d, %d) = %d\n", isValid, ladderCheck, r, c, result);
+    
     return result;
 }
 
 int cell_is_solid_ladder(int r, int c) {
-    int result = cell_is_ladder(r, c) && (cell_is_solid(r, c - 1, SOLID_TOP) || cell_is_solid(r, c + 1, SOLID_TOP) ||
-           !cell_is_ladder(r - 1, c));
-    printf("cell_is_solid_ladder(%d, %d) = %d\n", r, c, result);
+    int isLadder = cell_is_ladder(r, c);
+    int solidAbove = cell_is_solid(r, c - 1, SOLID_TOP);
+    int solidBelow = cell_is_solid(r, c + 1, SOLID_TOP);
+    int ladderAbove = !cell_is_ladder(r - 1, c);
+    printf("_____________is solid ladder____________\n");
+    // Print intermediate values
+    printf("isLadder: %d, solidAbove: %d, solidBelow: %d, ladderAbove: %d\n", isLadder, solidAbove, solidBelow, ladderAbove);
+    
+    int result = isLadder && (solidAbove || solidBelow || ladderAbove);
+    
+    printf("Result for cell_is_solid_ladder(%d, %d) = %d\n", r, c, result);
+    
     return result;
 }
 
