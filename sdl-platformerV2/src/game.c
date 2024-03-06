@@ -14,6 +14,8 @@
 #include "helpers.h"
 #include "render.h"
 #include "levels.h"
+#include "helpers.h"
+#include "objects.h"
 #include "gpio_control.h"
 
 #include <stdio.h>
