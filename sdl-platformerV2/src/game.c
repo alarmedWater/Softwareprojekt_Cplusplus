@@ -129,7 +129,7 @@ void completeLevel()
 
 void movePlayerLeft()
 {
-    printf("Player position: x=%f, vx=%f\n", player.x, player.vx);
+    //printf("Player position: x=%f, vx=%f\n", player.x, player.vx);
 
     if (!player.onLadder)
     {
@@ -144,7 +144,7 @@ void movePlayerLeft()
     }
     player.anim.flip = SDL_FLIP_HORIZONTAL;
     player.vx = -PLAYER_SPEED_RUN;
-    printf("Player position: x=%f, vx=%f\n", player.x, player.vx);
+    //printf("Player position: x=%f, vx=%f\n", player.x, player.vx);
 }
 
 
@@ -308,7 +308,6 @@ static void processInput()
 
     // ... Up
     if (game.keystate[SDL_SCANCODE_UP]) {
-        printf("move up");
         int r, c;
         object_get_cell((Object*)&player, &r, &c);
         if (!cell_is_solid_ladder(r, c)) {
@@ -697,10 +696,6 @@ if (current_time >= game.cleanTime)
     game.cleanTime = current_time + CLEAN_PERIOD;
     ObjectArray_clean(&level->objects);
 }
-
-#ifdef DEBUG_MODE
-printf("fps=%f, objects=%d\n", getCurrentFps(), level->objects.count);
-#endif
 }
 
 static void handelExit()

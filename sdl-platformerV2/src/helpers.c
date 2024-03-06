@@ -13,12 +13,16 @@ int cell_is_solid(int r, int c, int flags) {
 }
 
 int cell_is_ladder(int r, int c) {
-    return cell_is_valid(r, c) ? level->cells[r][c]->general_type_id == TYPE_LADDER : 0;
+    int result = cell_is_valid(r, c) ? level->cells[r][c]->general_type_id == TYPE_LADDER : 0;
+    printf("cell_is_ladder(%d, %d) = %d\n", r, c, result);
+    return result;
 }
 
 int cell_is_solid_ladder(int r, int c) {
-    return cell_is_ladder(r, c) && (cell_is_solid(r, c - 1, SOLID_TOP) || cell_is_solid(r, c + 1, SOLID_TOP) ||
+    int result = cell_is_ladder(r, c) && (cell_is_solid(r, c - 1, SOLID_TOP) || cell_is_solid(r, c + 1, SOLID_TOP) ||
            !cell_is_ladder(r - 1, c));
+    printf("cell_is_solid_ladder(%d, %d) = %d\n", r, c, result);
+    return result;
 }
 
 int cell_is_water(int r, int c) {
