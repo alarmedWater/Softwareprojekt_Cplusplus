@@ -1,3 +1,6 @@
+//gcc button_test.c -lwiringPi -o button_test
+
+
 #include <stdio.h>
 #include <wiringPi.h>
 #include <unistd.h> 
@@ -6,8 +9,8 @@
 // Define your GPIO pin numbers here
 #define BUTTON_PIN_LEFT 25  // WiringPi pin number for left button
 #define BUTTON_PIN_RIGHT 24 // WiringPi pin number for right button
-#define BUTTON_PIN_UP 23    // WiringPi pin number for up button
-#define BUTTON_PIN_DOWN 22  // WiringPi pin number for down button
+#define BUTTON_PIN_UP 22    // WiringPi pin number for up button
+#define BUTTON_PIN_DOWN 23  // WiringPi pin number for down button
 #define BUTTON_PIN_SPACE 21 // WiringPi pin number for space button
 
 void initializeializeGPIO() {
