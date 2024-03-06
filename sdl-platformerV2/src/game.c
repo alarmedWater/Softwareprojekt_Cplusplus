@@ -235,13 +235,14 @@ void handleNoDirection()
 // Procces Input with buttons:
 static void processInput()
 {
-    printf("Entering processInput function\n");
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
         switch (event.type)
         {
-       
+        case SDL_QUIT:
+            game.state = STATE_QUIT;
+            break;
          // Custom events for button presses
         case BUTTON_LEFT_PRESSED:
             movePlayerLeft();
