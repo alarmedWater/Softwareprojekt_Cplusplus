@@ -319,6 +319,7 @@ static void processInput()
             }
         } else {
             player.onLadder = 1;
+            printf("move up ladder is called");
             player.vy = -PLAYER_SPEED_LADDER;
             player.x = c * CELL_SIZE;
             setAnimationFlip((Object*)&player, 3, PLAYER_ANIM_SPEED_LADDER);
