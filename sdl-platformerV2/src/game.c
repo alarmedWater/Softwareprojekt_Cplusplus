@@ -729,7 +729,7 @@ void handleGameLoop()
     while (game.state != STATE_QUIT)
     {
         gpio_poll_and_push_events();
-        printPlayerOnLadderStatus(player);
+        printPlayerOnLadderStatus(&player);
         processFrame();
         frame_control_wait_for_next_frame();
         
