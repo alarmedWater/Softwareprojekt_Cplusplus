@@ -7,6 +7,8 @@
 
 // Debounce duration in milliseconds
 #define DEBOUNCE_TIME 20
+// Continuous press event generation interval in milliseconds
+#define PRESS_EVENT_INTERVAL 100
 
 // Utility function to get current time in milliseconds
 long get_current_time_millis(void) {
@@ -14,6 +16,7 @@ long get_current_time_millis(void) {
     gettimeofday(&time, NULL);
     return (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
+
 
 void gpio_initialize(void) {
     if (wiringPiSetup() == -1) {
@@ -57,11 +60,12 @@ int gpio_read_space_button(void) {
 
 
 
-// Last button states and the last time they were updated
+// Last button states, last time they were updated, and last time event was generated
 static int lastButtonState[5] = {HIGH, HIGH, HIGH, HIGH, HIGH};
 static long lastDebounceTime[5] = {0, 0, 0, 0, 0};
+static long lastEventTime[5] = {0, 0, 0, 0, 0};
 
-void gpio_poll_and_push_events(void) {
+vvoid gpio_poll_and_push_events(void) {
     // Current time in milliseconds
     long currentTime = get_current_time_millis();
 
@@ -71,29 +75,23 @@ void gpio_poll_and_push_events(void) {
     // Array of corresponding SDL custom event types
     Uint32 events[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
 
-    // Array of button names for logging
-    char* buttonNames[] = {"Left", "Right", "Up", "Down", "Space"};
-
     for (int i = 0; i < sizeof(buttonPins) / sizeof(buttonPins[0]); ++i) {
         int currentButtonState = digitalRead(buttonPins[i]);
+
+        // Continuous event generation if button is pressed
+        if (currentButtonState == LOW && (currentTime - lastEventTime[i] > PRESS_EVENT_INTERVAL)) {
+            // Generate event
+            SDL_Event event;
+            SDL_zero(event);
+            event.type = events[i];
+            SDL_PushEvent(&event);
+            lastEventTime[i] = currentTime;
+        }
         
-        // Check if button state has changed and if the change is beyond the debounce time
+        // Check if button state has changed for debouncing
         if (currentButtonState != lastButtonState[i] && (currentTime - lastDebounceTime[i] > DEBOUNCE_TIME)) {
-            // Update the debounce timer
-            lastDebounceTime[i] = currentTime;
-
-            if (currentButtonState == LOW) { // Button is pressed when pin is LOW
-                SDL_Event event;
-                SDL_zero(event);
-                event.type = events[i];
-                SDL_PushEvent(&event); // Push the SDL custom event
-                
-                // Log to the console
-                printf("Button %s pressed, pushing event: %d\n", buttonNames[i], event.type);
-            }
-
-            // Update the last button state
-            lastButtonState[i] = currentButtonState;
+            lastDebounceTime[i] = currentTime; // Update debounce timer
+            lastButtonState[i] = currentButtonState; // Update the last button state
         }
     }
 }
