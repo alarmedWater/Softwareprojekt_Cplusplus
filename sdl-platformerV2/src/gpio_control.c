@@ -84,6 +84,7 @@ void gpio_poll_and_push_events(void) {
                 SDL_zero(event);
                 event.type = events[i];
                 SDL_PushEvent(&event); // Push the SDL custom event
+             printf("Button %s pressed, pushing event: %d\n", buttonNames[i], event.type);
             }
 
             // Update the last button state
