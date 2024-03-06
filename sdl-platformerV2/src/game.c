@@ -250,7 +250,7 @@ static void processInput()
             break;
         case BUTTON_RIGHT_PRESSED:
             movePlayerRight();
-            printf("Event handled: BUTTON_RIGHT_PRESSED\n");
+            printf("Event handled: BUTTON_RIGHT_PRESSED for pushing event: %d\n",  event.type);
             break;
         case BUTTON_UP_PRESSED: // Define and generate this event for GPIO button
             movePlayerUp();
