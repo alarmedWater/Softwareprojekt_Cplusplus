@@ -308,6 +308,7 @@ static void processInput()
 
     // ... Up
     if (game.keystate[SDL_SCANCODE_UP]) {
+        printf("move up");
         int r, c;
         object_get_cell((Object*)&player, &r, &c);
         if (!cell_is_solid_ladder(r, c)) {
