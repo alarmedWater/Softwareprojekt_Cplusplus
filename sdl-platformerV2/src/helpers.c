@@ -17,6 +17,7 @@ int cell_is_ladder(int r, int c) {
 }
 
 int cell_is_solid_ladder(int r, int c) {
+    printf("Ladder is called");s
     return cell_is_ladder(r, c) && (cell_is_solid(r, c - 1, SOLID_TOP) || cell_is_solid(r, c + 1, SOLID_TOP) ||
            !cell_is_ladder(r - 1, c));
 }
