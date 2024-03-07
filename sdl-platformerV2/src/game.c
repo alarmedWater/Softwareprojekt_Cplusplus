@@ -178,7 +178,9 @@ void movePlayerRight()
 
 void movePlayerUp()
 {
+
     int r, c;
+
     object_get_cell((Object *)&player, &r, &c);
     if (!cell_is_solid_ladder(r, c))
     {
@@ -407,6 +409,20 @@ static void processPlayer()
 
     player.vx = limit_absolute(player.vx, MAX_SPEED);
     player.vy = limit_absolute(player.vy, MAX_SPEED);
+
+       // Check if the player is on the ground or not on a ladder
+    if (!player.inAir) {
+        // Reset jump denial when on solid ground
+        game.jumpDenied = 0;
+    }
+
+    // Additional logic to reset player.onLadder if not in contact with a ladder
+    if (!cell_is_solid_ladder(r, c) && player.onLadder) {
+        player.onLadder = 0;
+        // Optionally, reset jumping here if you want to allow jumping immediately after leaving a ladder
+        game.jumpDenied = 0;
+    }
+
 
     // ... X
     player.x += player.vx * dt;
