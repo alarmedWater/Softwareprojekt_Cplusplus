@@ -76,6 +76,12 @@ static const double PLAYER_ANIM_SPEED_LADDER = 6; //
 
 static const double CLEAN_PERIOD = 10000; // Milliseconds
 
+//flags for handeling button input to create continius movement:
+static int movingLeft = 0;
+static int movingRight = 0;
+static int movingUp = 0;
+static int movingDown = 0;
+
 void damagePlayer(int damage)
 {
     if (player.invincibility > 0)
@@ -233,53 +239,66 @@ void handleNoDirection()
 }
 
 // Procces Input with buttons:
-static void processInput()
-{
+static void processInput() {
     SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            game.state = STATE_QUIT;
-            break;
-         // Custom events for button presses
-        case BUTTON_LEFT_PRESSED:
-            movePlayerLeft();
-            printf("Event handled: BUTTON_LEFT_PRESSED\n");
-            break;
-        case BUTTON_RIGHT_PRESSED:
-            movePlayerRight();
-            printf("Event handled: BUTTON_RIGHT_PRESSED for pushing event: %d\n",  event.type);
-            break;
-        case BUTTON_UP_PRESSED: // Define and generate this event for GPIO button
-            movePlayerUp();
-            printf("Event handled: BUTTON_UP_PRESSED\n");
-            break;
-        case BUTTON_DOWN_PRESSED: // Define and generate this event for GPIO button
-            movePlayerDown();
-            printf("Event handled: BUTTON_DOWN_PRESSED\n");
-            break;
-        case BUTTON_SPACE_PRESSED: // Define and generate this event for GPIO button
-            playerInteract();
-            printf("Event handled: BUTTON_SPACE_PRESSED\n");
-            break;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                game.state = STATE_QUIT;
+                break;
 
-        // Default case for unhandled events
-        default:
-            printf("Unhandled event: %d\n", event.type);
-            break;
+            // Handle button press events
+            case BUTTON_LEFT_PRESSED:
+                movingLeft = 1;
+                break;
+            case BUTTON_RIGHT_PRESSED:
+                movingRight = 1;
+                break;
+            case BUTTON_UP_PRESSED:
+                movingUp = 1;
+                break;
+            case BUTTON_DOWN_PRESSED:
+                movingDown = 1;
+                break;
+
+            // Handle button release events
+            case BUTTON_LEFT_RELEASED:
+                movingLeft = 0;
+                break;
+            case BUTTON_RIGHT_RELEASED:
+                movingRight = 0;
+                break;
+            case BUTTON_UP_RELEASED:
+                movingUp = 0;
+                break;
+            case BUTTON_DOWN_RELEASED:
+                movingDown = 0;
+                break;
+
+            // Additional cases for other buttons as necessary
         }
     }
 
-    // Handle the scenario when no direction is pressed
-    // This could be more complex depending on how you're managing state
-    // For simplicity, it's called here but you might conditionally call it based on other inputs
-    handleNoDirection();
+    // Apply continuous movement based on the state flags
+    if (movingLeft) {
+        movePlayerLeft();
+    }
+    if (movingRight) {
+        movePlayerRight();
+    }
+    if (movingUp) {
+        movePlayerUp();
+    }
+    if (movingDown) {
+        movePlayerDown();
+    }
 
-    // Additional logic for handling inputs not covered by SDL events goes here
-    // For example, continuous movement or actions while a key/button is held down
+    // Call handleNoDirection() only if no direction is being pressed
+    if (!movingLeft && !movingRight && !movingUp && !movingDown) {
+        handleNoDirection();
+    }
 }
+
 
 
 /*//Procces Input with keyboard:

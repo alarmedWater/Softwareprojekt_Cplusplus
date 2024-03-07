@@ -72,26 +72,29 @@ void gpio_poll_and_push_events(void) {
     // Array of button pins
     int buttonPins[] = {BUTTON_PIN_LEFT, BUTTON_PIN_RIGHT, BUTTON_PIN_UP, BUTTON_PIN_DOWN, BUTTON_PIN_SPACE};
 
-    // Array of corresponding SDL custom event types
-    Uint32 events[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
+    // Array of corresponding SDL custom event types for presses
+    Uint32 eventsPress[] = {BUTTON_LEFT_PRESSED, BUTTON_RIGHT_PRESSED, BUTTON_UP_PRESSED, BUTTON_DOWN_PRESSED, BUTTON_SPACE_PRESSED};
+
+    // Array of corresponding SDL custom event types for releases
+    Uint32 eventsRelease[] = {BUTTON_LEFT_RELEASED, BUTTON_RIGHT_RELEASED, BUTTON_UP_RELEASED, BUTTON_DOWN_RELEASED, BUTTON_SPACE_RELEASED};
 
     for (int i = 0; i < sizeof(buttonPins) / sizeof(buttonPins[0]); ++i) {
         int currentButtonState = digitalRead(buttonPins[i]);
 
-        // Continuous event generation if button is pressed
-        if (currentButtonState == LOW && (currentTime - lastEventTime[i] > PRESS_EVENT_INTERVAL)) {
-            // Generate event
+        // Generate press or release event based on state change
+        if (currentButtonState != lastButtonState[i] && (currentTime - lastDebounceTime[i] > DEBOUNCE_TIME)) {
             SDL_Event event;
             SDL_zero(event);
-            event.type = events[i];
+            if (currentButtonState == LOW) {
+                // Button pressed
+                event.type = eventsPress[i];
+            } else {
+                // Button released
+                event.type = eventsRelease[i];
+            }
             SDL_PushEvent(&event);
-            lastEventTime[i] = currentTime;
-        }
-        
-        // Check if button state has changed for debouncing
-        if (currentButtonState != lastButtonState[i] && (currentTime - lastDebounceTime[i] > DEBOUNCE_TIME)) {
-            lastDebounceTime[i] = currentTime; // Update debounce timer
-            lastButtonState[i] = currentButtonState; // Update the last button state
+            lastDebounceTime[i] = currentTime;
+            lastButtonState[i] = currentButtonState;
         }
     }
 }
